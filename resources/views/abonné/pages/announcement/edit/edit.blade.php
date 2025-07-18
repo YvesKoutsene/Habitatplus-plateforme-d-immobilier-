@@ -81,7 +81,7 @@
                 @php
                     $video = $videos[$j] ?? null;
                     $videoSrc = $video ? asset($video->url_video) : '';
-                    $videoLocked = !$userHasSubscription && !$video;
+                    $videoLocked = !$userHasSubscription;
                 @endphp
 
                 <div class="d-flex flex-column align-items-center position-relative">

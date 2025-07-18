@@ -8,6 +8,7 @@ use App\Models\Bien;
 use App\Models\CategorieBien;
 use App\Models\PhotoBien;
 use App\Models\ValeurBien;
+use App\Models\VideoBien;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -90,6 +91,7 @@ class AnnouncementController extends Controller
         $action = $request->input('action', 'save');
 
         //dd($request->all());
+        //dd($request->file('videos'));
 
         $validationRules = [
             'category' => 'required|exists:categorie_biens,id',
@@ -141,7 +143,7 @@ class AnnouncementController extends Controller
             }
         }
 
-        // Pour less videos
+        // Pour les videos
         if ($request->hasFile('videos')) {
             foreach ($request->file('videos') as $video) {
                 $videoName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $video->getClientOriginalName());

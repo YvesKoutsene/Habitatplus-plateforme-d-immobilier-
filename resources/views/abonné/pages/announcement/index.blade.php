@@ -31,7 +31,7 @@
                             $hasPublishedOrBlocked = true;
                         @endphp
                         <div class="col-6 col-sm-6 col-md-4 col-lg-3">
-                            <div class="card"> <!-- card shadow-lg border-0 rounded-lg overflow-hidden -->
+                            <div class="card me-2 mb-4"> <!-- card shadow-lg border-0 rounded-lg overflow-hidden -->
                                 <div class="position-relative">
                                     @if($bien->photos && count($bien->photos) > 0)
                                         <img src="{{ asset($bien->photos[0]->url_photo) }}"
@@ -205,7 +205,7 @@
                             $hasDraft = true;
                         @endphp
                         <div class="col-6 col-sm-6 col-md-4 col-lg-3 mb-4">
-                            <div class="card"> <!-- card shadow-lg border-0 rounded-lg overflow-hidden -->
+                            <div class="card  me-2 mb-4"> <!-- card shadow-lg border-0 rounded-lg overflow-hidden -->
                                 <div class="position-relative">
                                     @if($bien->photos && count($bien->photos) > 0)
                                         <img src="{{ asset($bien->photos[0]->url_photo) }}"
@@ -339,7 +339,7 @@
                             $hasFinished = true;
                         @endphp
                         <div class="col-6 col-sm-6 col-md-4 col-lg-3 mb-4">
-                            <div class="card"> <!-- card shadow-lg border-0 rounded-lg overflow-hidden -->
+                            <div class="card  me-2 mb-4"> <!-- card shadow-lg border-0 rounded-lg overflow-hidden -->
                                 <div class="position-relative">
                                     @if($bien->photos && count($bien->photos) > 0)
                                         <img src="{{ asset($bien->photos[0]->url_photo) }}"
