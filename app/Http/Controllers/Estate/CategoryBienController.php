@@ -10,6 +10,7 @@ use App\Models\AssociationCategorieParametre;
 use App\Models\ParametreCategorie;
 use App\Models\AlerteRecherche;
 use App\Models\Bien;
+use Illuminate\Support\Str;
 
 class CategoryBienController extends Controller
 {
@@ -85,6 +86,7 @@ class CategoryBienController extends Controller
 
         $categorie = CategorieBien::create([
             'titre' => $validated['titre'],
+            'keycategoriebien' => Str::uuid()->toString(),
             'statut' => 'actif',
             'description' => $validated['description']
         ]);
@@ -94,6 +96,7 @@ class CategoryBienController extends Controller
                 AssociationCategorieParametre::create([
                     'id_categorie' => $categorie->id,
                     'id_parametre' => $parametreId,
+                    'keyassociationcategorie' => Str::uuid()->toString(),
                 ]);
             }
         }
@@ -102,12 +105,14 @@ class CategoryBienController extends Controller
             foreach ($validated['autres_parametres'] as $nomParametre) {
                 if (!empty($nomParametre)) {
                     $nouveauParametre = ParametreCategorie::create([
-                        'nom_parametre' => $nomParametre
+                        'nom_parametre' => $nomParametre,
+                        'keyparametrecategorie' => Str::uuid()->toString(),
                     ]);
 
                     AssociationCategorieParametre::create([
                         'id_categorie' => $categorie->id,
                         'id_parametre' => $nouveauParametre->id,
+                        'keyassociationcategorie' => Str::uuid()->toString(),
                     ]);
                 }
             }

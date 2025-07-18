@@ -10,17 +10,17 @@
     @if( Auth::user()->typeUser === 0 || Auth::user()->can('voir annonces'))
         <li class="nav-item">
             <a class="nav-link collapsed {{ request()->is('announcement/list') || request()->is('announcement/list/block') || request()->routeIs('announcement.details') ? 'active' : '' }} " data-bs-target="#announcement-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-megaphone"></i><span>Annonce</span><i class="bi bi-chevron-down ms-auto"></i>
+                <i class="bi bi-megaphone"></i><span>Annonces</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="announcement-nav" class="nav-content collapse {{ request()->is('announcement/list') || request()->is('announcement/list/block') || request()->routeIs('announcement.details') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
                 <li>
                     <a class="{{ request()->routeIs('announcement.list') ? 'active' : '' }}" href="{{ route('announcement.list') }}">
-                        <i class="bi bi-circle"></i><span>Annonce Publiée</span>
+                        <i class="bi bi-circle"></i><span>Publiées</span>
                     </a>
                 </li>
                 <li>
                     <a class="{{ request()->routeIs('announcement.list02') ? 'active' : '' }}" href="{{ route('announcement.list02') }}">
-                        <i class="bi bi-circle"></i><span>Annonce Bloquée</span>
+                        <i class="bi bi-circle"></i><span>Bloquées</span>
                     </a>
                 </li>
             </ul>
@@ -30,7 +30,7 @@
     @if( Auth::user()->typeUser === 0 || Auth::user()->can('voir catégories') || Auth::user()->can('créer catégories') || Auth::user()->can('voir paramètres catégories') || Auth::user()->can('ajouter paramètres catégories'))
     <li class="nav-item">
         <a class="nav-link collapsed {{ request()->is('category_bien*') || request()->is('parameter_category*') ? 'active' : '' }}" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
-            <i class="bi bi-tag"></i><span>Categorie Bien</span><i class="bi bi-chevron-down ms-auto"></i>
+            <i class="bi bi-tag"></i><span>Categories Bien</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="components-nav" class="nav-content collapse {{ request()->is('category_bien*') || request()->is('parameter_category*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
             @if(Auth::user()->typeUser === 0 || Auth::user()->can('voir catégories'))
@@ -68,7 +68,7 @@
     @if( Auth::user()->typeUser === 0 || Auth::user()->can('voir modèles d\'abonnements') || Auth::user()->can('créer modèles d\'abonnements') || Auth::user()->can('voir paramètres modèles d\'abonnements') || Auth::user()->can('ajouter paramètres modèles d\'abonnements') )
     <li class="nav-item">
         <a class="nav-link collapsed {{ request()->is('model_subscription*') || request()->is('parameter_model*') ? 'active' : '' }}" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-            <i class="bi bi-credit-card-2-back"></i><span>Modèle Abonnement</span><i class="bi bi-chevron-down ms-auto"></i>
+            <i class="bi bi-credit-card-2-back"></i><span>Modèles Abonnement</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="forms-nav" class="nav-content collapse {{ request()->is('model_subscription*') || request()->is('parameter_model*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
             @if(Auth::user()->typeUser === 0 || Auth::user()->can('voir modèles d\'abonnements'))
@@ -103,20 +103,40 @@
     </li>
     @endif
 
-    @if(Auth::user()->typeUser === 0 || Auth::user()->can('voir transactions/abonnements'))
+    @if(Auth::user()->typeUser === 0 || Auth::user()->can('voir transactions'))
     <li class="nav-item">
-        <a class="nav-link collapsed {{ request()->is('payment*') || request()->is('transaction*') ? 'active' : '' }}" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-            <i class="bi bi-cash-stack"></i><span>Paiement</span><i class="bi bi-chevron-down ms-auto"></i>
+        <a class="nav-link collapsed {{ request()->is('transaction*') ? 'active' : '' }}" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+            <i class="bi bi-cash-stack"></i><span>Transactions</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-        <ul id="tables-nav" class="nav-content collapse {{ request()->is('payment*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+        <ul id="tables-nav" class="nav-content collapse {{ request()->is('transaction*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
             <li>
                 <a href="#">
-                    <i class="bi bi-circle"></i><span>Transaction</span>
+                    <i class="bi bi-circle"></i><span>Validées</span>
                 </a>
             </li>
             <li>
                 <a href="#">
-                    <i class="bi bi-circle"></i><span>Abonnement</span>
+                    <i class="bi bi-circle"></i><span>Échouées</span>
+                </a>
+            </li>
+        </ul>
+    </li>
+    @endif
+
+    @if(Auth::user()->typeUser === 0 || Auth::user()->can('voir abonnements'))
+    <li class="nav-item">
+        <a class="nav-link collapsed {{ request()->is('abonnement*') ? 'active' : '' }}" data-bs-target="#tables02-nav" data-bs-toggle="collapse" href="#">
+            <i class="bi bi-star"></i><span>Abonnements</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="tables02-nav" class="nav-content collapse {{ request()->is('abonnement*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+            <li>
+                <a href="#">
+                    <i class="bi bi-circle"></i><span>Actifs</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="bi bi-circle"></i><span>Expirés</span>
                 </a>
             </li>
         </ul>

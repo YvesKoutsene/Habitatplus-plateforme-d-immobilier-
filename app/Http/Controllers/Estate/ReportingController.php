@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\AnnonceBloqueeMail;
 use App\Mail\AnnonceReactiveeMail;
 
+use Illuminate\Support\Str;
+
 class ReportingController extends Controller
 {
     /**
@@ -49,6 +51,7 @@ class ReportingController extends Controller
         }
 
         Signalement::create([
+            'keysignalement' => Str::uuid()->toString(),
             'motif' => $request->motif,
             'id_user' => $user->id,
             'id_bien' => $idBien,

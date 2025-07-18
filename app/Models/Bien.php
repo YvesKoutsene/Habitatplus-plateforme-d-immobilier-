@@ -10,7 +10,7 @@ class Bien extends Model
     //
     use HasFactory;
 
-    protected $fillable = ['keycategoriebien', 'titre', 'description', 'prix', 'lieu', 'datePublication', 'statut',
+    protected $fillable = ['keybien', 'titre', 'description', 'prix', 'lieu', 'datePublication', 'statut',
     'type_offre', 'motifBlocage', 'id_user', 'id_categorie_bien', 'createdby', 'updatedby', 'ville'];
 
     public function user()

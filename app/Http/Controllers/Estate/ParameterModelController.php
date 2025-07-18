@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Models\ParametreModele;
 use App\Models\AssociationModeleParametre;
+use Illuminate\Support\Str;
 
 class ParameterModelController extends Controller
 {
@@ -28,13 +29,16 @@ class ParameterModelController extends Controller
         return view('admin.pages.parameter_model.index', compact('parametres', 'search', 'perPage'));
     }
 
-
     public function store(Request $request)
     {
         $request->validate([
             'nom_parametre' => 'required|string|max:255|unique:parametre_categories,nom_parametre',
         ],[
             'nom_parametre.unique' => 'Ce paramètre de catégorie de bien existe déjà'
+        ]);
+
+        $request->merge([
+            'keyparametremodele' => Str::uuid()->toString(),
         ]);
 
         $parametre = ParametreModele::create($request->all());

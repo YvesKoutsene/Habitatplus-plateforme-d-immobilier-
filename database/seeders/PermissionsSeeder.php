@@ -66,9 +66,13 @@ class PermissionsSeeder extends Seeder
         Permission::create(['name' => 'editer paramètres modèles d\'abonnements', 'parent_id' => $manageSubscriptionSettings->id]);
         Permission::create(['name' => 'supprimer paramètres modèles d\'abonnements', 'parent_id' => $manageSubscriptionSettings->id]);
 
-        // Permissions des transactions et abonnements
-        $manageTransactions = Permission::create(['name' => 'gérer transactions/abonnements']);
-        Permission::create(['name' => 'voir transactions/abonnements', 'parent_id' => $manageTransactions->id]);
+        // Permissions des transactions
+        $manageTransactions = Permission::create(['name' => 'gérer transactions']);
+        Permission::create(['name' => 'voir transactions', 'parent_id' => $manageTransactions->id]);
+
+        // Permissions des abonnements
+        $manageAbonnements = Permission::create(['name' => 'gérer abonnements']);
+        Permission::create(['name' => 'voir abonnements', 'parent_id' => $manageAbonnements->id]);
 
         // Permissions de gestion des tickets de support
         $manageTickets = Permission::create(['name' => 'gérer tickets']);

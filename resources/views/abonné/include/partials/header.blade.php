@@ -55,7 +55,7 @@
                     @auth
                     <a class="nav-link d-flex flex-column align-items-center text-black-50" href="#" id="" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-lightning-fill"></i>
-                        <span class="text-black-50 small"><strong>{{ auth()->user()->creditboost?->point ?? 0 }} Points</strong></span>
+                        <span class="text-black-50 small"><strong>{{ auth()->user()->creditboost?->point ?? 0 }} </strong></span> <!--Points-->
                     </a>
 
                     <a class="nav-link text-white d-flex align-items-center bg-danger btn-publish px-2 py-1" href="{{ route('announcement.create') }}">
@@ -90,8 +90,8 @@
                     <ul class="nav flex-column align-items-center">
                         <li class="nav-item mb-2">
                             <a class="nav-link text-dark fw-semibold d-flex align-items-center justify-content-center href="">
-                                <i class="bi bi-lightning text-black-50"></i>{{ auth()->user()->creditboost?->point ?? 0 }} Points
-                            </a>
+                                <i class="bi bi-lightning text-black-50"></i>{{ auth()->user()->creditboost?->point ?? 0 }}
+                            </a> <!--Points-->
                         </li>
                         <li class="nav-item mb-3">
                             <a class="nav-link text-dark fw-semibold d-flex align-items-center justify-content-center px-4 py-2 border rounded shadow-sm"

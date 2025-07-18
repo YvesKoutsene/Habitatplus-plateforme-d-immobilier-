@@ -11,6 +11,7 @@ use App\Models\ValeurBien;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AnnouncementController extends Controller
 {
@@ -111,6 +112,7 @@ class AnnouncementController extends Controller
         $validated = $request->validate($validationRules);
 
         $annonce = Bien::create([
+            'keybien' => Str::uuid()->toString(),
             'titre' => $validated['titre'],
             'description' => $request->input('description', ''),
             'prix' => $request->input('prix'),
@@ -130,6 +132,7 @@ class AnnouncementController extends Controller
                 PhotoBien::create([
                     'url_photo' => Storage::url($photoPath),
                     'id_bien' => $annonce->id,
+                    'keyphoto' => Str::uuid()->toString(),
                 ]);
             }
         }
@@ -143,6 +146,7 @@ class AnnouncementController extends Controller
                     'valeur' => $value,
                     'id_bien' => $annonce->id,
                     'id_association_categorie' => $assocId,
+                    'keyvaleurbien' => Str::uuid()->toString(),
                 ]);
             }
         }

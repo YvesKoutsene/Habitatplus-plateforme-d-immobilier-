@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\CompteSuspenduMail;
 use App\Mail\CompteReactiveMail;
 
+use Illuminate\Support\Str;
+
 class UserController extends Controller
 {
 
@@ -101,6 +103,7 @@ class UserController extends Controller
 
         $user = User::create([
             'name' => $request->name,
+            'keyuser' => Str::uuid()->toString(),
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'pays' => $request->pays,

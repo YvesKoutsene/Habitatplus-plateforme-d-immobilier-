@@ -18,15 +18,6 @@
             <hr class="dropdown-divider">
         </li>
         <li class="nav-item mb-3" role="presentation">
-            <button class="nav-link d-flex align-items-center" id="portefeuille-tab" data-bs-toggle="tab" data-bs-target="#portefeuille" type="button" role="tab" aria-controls="portefeuille" aria-selected="false">
-                <i class="bi bi-wallet-fill me-2"></i> Portefeuille
-            </button>
-        </li>
-        <li>
-            <hr class="dropdown-divider">
-        </li>
-
-        <li class="nav-item mb-3" role="presentation">
             <button class="nav-link d-flex align-items-center" id="abonnements-tab" data-bs-toggle="tab" data-bs-target="#abonnements" type="button" role="tab" aria-controls="abonnements" aria-selected="false">
                 <i class="bi bi-star-fill me-2"></i> Abonnements
             </button>

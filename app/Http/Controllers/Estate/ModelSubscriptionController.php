@@ -8,6 +8,8 @@ use App\Models\AssociationModeleParametre;
 use App\Models\ParametreModele;
 use App\Models\ModeleAbonnement;
 
+use Illuminate\Support\Str;
+
 class ModelSubscriptionController extends Controller
 {
     /**
@@ -74,6 +76,7 @@ class ModelSubscriptionController extends Controller
 
         $modele = ModeleAbonnement::create([
             'nom' => $validated['nom'],
+            'keymodele' => Str::uuid()->toString(),
             'description' => $validated['description'],
             'prix' => $validated['prix'],
             'duree' => $validated['duree'],
@@ -82,6 +85,7 @@ class ModelSubscriptionController extends Controller
         foreach ($validated['parametres'] as $parametre) {
             AssociationModeleParametre::create([
                 'id_modele' => $modele->id,
+                'keyassociationmodele' => Str::uuid()->toString(),
                 'id_parametre' => $parametre['id'],
                 'valeur' => $parametre['valeur'],
             ]);

@@ -1,112 +1,93 @@
-<div class="card shadow-lg border-0 rounded-lg overflow-hidden">
-    <div class="text-white text-center py-5 position-relative">
-        <!-- Élément de fond assombri -->
-        <div class="bg-black" style="opacity: 0.6; position: absolute; inset: 0;"></div>
+<div class="profile-card container my-5">
+    <!-- En-tête profil -->
+    <div class="profile-header position-relative text-center text-white p-5 rounded-top">
+        <img src="{{ asset(Auth::user()->photo_profil) }}"
+             alt="Photo de profil"
+             class="profile-avatar shadow-lg">
 
-        <div class="profile-picture mb-4 position-relative">
-            <img src="{{ asset(Auth::user()->photo_profil) }}"
-                 alt="Photo de profil"
-                 class="img-thumbnail rounded-circle shadow"
-                 style="width: 120px; height: 120px; border: 2px solid #fff; position: relative; z-index: 1;">
-        </div>
+        <h3 class="mt-4 mb-1">{{ auth()->user()->name }}</h3>
+        <p class="mb-1">{{ auth()->user()->email }}</p>
 
-        <!-- Nom -->
-        <h4 class="mb-0 text-light position-relative" style="z-index: 1;">
-            {{ auth()->user()->name }}
-        </h4>
-
-        <!-- Code parrainage -->
-        <div class="mt-2 mb-2 position-relative" style="z-index: 1;">
-            @php
-                $code = auth()->user()->parrainage?->code ?? null;
-            @endphp
-
-            @if ($code)
-                <span class="badge bg-success px-3 py-2 shadow-sm" style="font-size: 0.9rem;">
-                    Code de parrainage : {{ $code }}
-                </span>
-            @else
-                <span class="badge bg-secondary px-3 py-2 shadow-sm" style="font-size: 0.9rem;">
-                    Aucun code de parrainage
-                </span>
-            @endif
-        </div>
-
-        <!-- Email -->
-        <!--
-        <p class="mb-1 text-light position-relative" style="z-index: 1;">
-            {{ auth()->user()->email }}
-        </p>
-        -->
-
-        <!-- Ancienneté -->
         @php
-            $createdAt = \Carbon\Carbon::parse(Auth::user()->created_at);
-            $now = \Carbon\Carbon::now();
-            $diffInDays = $createdAt->diffInDays($now);
-            $diffInMonths = $createdAt->diffInMonths($now);
-            $diffInYears = $createdAt->diffInYears($now);
-            $diffInHours = $createdAt->diffInHours($now);
-            $diffInMins = $createdAt->diffInMinutes($now);
+            \Carbon\Carbon::setLocale('fr');
+            $diff = \Carbon\Carbon::parse(Auth::user()->created_at)->diffForHumans(null, true);
         @endphp
 
-        <p class="small text-light position-relative mb-0" style="z-index: 1;">
-            Actif depuis :
-            @if ($diffInYears > 0)
-                <strong>{{ $diffInYears }} an{{ $diffInYears > 1 ? 's' : '' }}</strong>
-            @elseif ($diffInMonths > 0)
-                <strong>{{ $diffInMonths }} mois</strong>
-            @elseif ($diffInDays > 7)
-                <strong>{{ floor($diffInDays / 7) }} semaine{{ floor($diffInDays / 7) > 1 ? 's' : '' }}</strong>
-            @elseif ($diffInDays > 0)
-                <strong>{{ $diffInDays }} jour{{ $diffInDays > 1 ? 's' : '' }}</strong>
-            @elseif($diffInHours > 0)
-                <strong>{{ $diffInHours }} heure{{ $diffInHours > 1 ? 's' : '' }}</strong>
-            @else
-                <strong>{{ $diffInMins }} minute{{ $diffInMins > 1 ? 's' : '' }}</strong>
-            @endif
-        </p>
+        <p class="text-light opacity-75 mb-0">Actif depuis {{ $diff }}</p>
     </div>
 
-    <!-- Boutons -->
-    <div class="card-body text-center">
-        <div class="row justify-content-center">
-            <div class="col-auto mb-3">
-                <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-                    <i class="bi bi-pencil-square me-2"></i> Modifier informations
-                </button>
+    <!-- Corps -->
+    <div class="card-body bg-white p-4 rounded-bottom shadow-sm">
+        <!-- Parrainage -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            @php
+                $code = auth()->user()->parrainage?->code;
+            @endphp
+
+            <div>
+                <span class="fw-bold me-2 text-black">Code de parrainage :</span>
+                <span class="badge bg-success">{{ $code ?? 'Aucun' }}</span>
             </div>
-            <div class="col-auto mb-3">
-                <button class="btn btn-warning shadow-sm" data-bs-toggle="modal" data-bs-target="#editPasswordModal">
-                    <i class="bi bi-lock me-2"></i> Changer mot de passe
+
+            @if($code)
+                <button class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('{{ $code }}')">
+                    <i class="bi bi-clipboard"></i> Copier
                 </button>
+            @endif
+        </div>
+
+        <!-- Portefeuille -->
+        <div class="wallet-card shadow-lg p-4 mb-4 border-0 rounded-4 overflow-hidden position-relative text-white" style="background: linear-gradient(135deg, #1e1e2f, #3c3c5c);">
+            <div class="position-absolute top-0 start-0 w-100" style="height: 8px; background: linear-gradient(90deg, #ff416c, #ff4b2b); z-index: 1;"></div>
+            <div class="position-absolute opacity-10" style="top: 10px; right: 20px; font-size: 5rem;">
+                <i class="bi bi-wallet2 text-warning"></i>
             </div>
+            <h5 class="mb-1">Mon portefeuille</h5>
+            <h3 class="fw-bold text-warning">{{ number_format(auth()->user()->portefeuilleActif->solde ?? 0, 0, ',', ' ') }} FCFA</h3>
+            <button class="btn btn-outline-light btn-sm mt-3 rounded-pill" data-bs-toggle="modal" data-bs-target="#modal">
+                <i class="bi bi-plus-circle me-1"></i> Recharger
+            </button>
+        </div>
+
+        <!-- Boutons d'action -->
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+            <button class="btn btn-primary rounded-pill px-4 shadow" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                <i class="bi bi-pencil-square me-2"></i> Modifier profil
+            </button>
+
+            <button class="btn btn-warning rounded-pill px-4 shadow" data-bs-toggle="modal" data-bs-target="#editPasswordModal">
+                <i class="bi bi-lock me-2"></i> Changer mot de passe
+            </button>
         </div>
     </div>
 </div>
 
-
 <style>
-    .card {
-        margin: 30px auto;
-        border-radius: 15px;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    .profile-header {
+        background: linear-gradient(135deg, #0d6efd, #6610f2);
+        border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem;
     }
 
-    .card:hover {
-        transform: scale(1.02);
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-    }
-
-    .profile-picture img {
-        transition: transform 0.3s ease;
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border: 4px solid #fff;
         border-radius: 50%;
+        position: absolute;
+        top: -60px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: white;
     }
 
-    .profile-picture img:hover {
-        transform: scale(1.3);
+    .wallet-card {
+        background: linear-gradient(135deg, #1f1f1f, #3c3c3c);
+        border-radius: 1rem;
     }
 
+    /* Add by Jyl */
     .btn {
         border-radius: 25px;
         font-size: 1rem;
@@ -148,13 +129,16 @@
     .btn-secondary:hover {
         background-color: rgba(76, 91, 20, 0.66);
         transform: translateY(-3px);
-    }
 
-    .text-light {
-        opacity: 0.9;
-    }
-
-    .text-light strong {
-        font-weight: bold;
-    }
 </style>
+
+<script>
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(function () {
+        alert('Code copié : ' + text);
+    }, function (err) {
+        alert('Erreur lors de la copie');
+    });
+}
+</script>
+

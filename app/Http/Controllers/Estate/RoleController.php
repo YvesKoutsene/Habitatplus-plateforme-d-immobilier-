@@ -60,7 +60,8 @@ class RoleController extends Controller
          ]);
 
          try {
-             $role = Role::create(['name' => $request->name,
+             $role = Role::create([
+                 'name' => $request->name,
                  'statut' => 'actif'
              ]);
 

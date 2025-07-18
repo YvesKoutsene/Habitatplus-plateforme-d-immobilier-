@@ -85,20 +85,27 @@ class User extends Authenticatable implements MustVerifyEmail
     public function abonnementActif()
     {
         return $this->hasOne(Abonnement::class, 'id_user')
-                ->where('statut', 'actif');
+               ->where('statut', 'actif');
     }
 
     // Pour renvoyer l'energie du user
     public function creditboost()
     {
         return $this->hasOne(CreditBoost::class, 'id_user')
-                ->where('statut', 'actif');
+               ->where('statut', 'actif');
     }
 
     // Pour créer le portefeuille
     public function portefeuille()
     {
         return $this->hasOne(Portefeuille::class, 'id_user');
+    }
+
+    // Pour renovyer son portefeuille actif
+    public function portefeuilleActif()
+    {
+        return $this->hasOne(Portefeuille::class, 'id_user')
+               ->where('statut', 'actif');
     }
 
     // Pour créer le code de parrainage

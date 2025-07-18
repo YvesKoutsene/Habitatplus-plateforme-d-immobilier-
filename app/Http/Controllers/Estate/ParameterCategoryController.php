@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Models\ParametreCategorie;
 use App\Models\AssociationCategorieParametre;
 
+use Illuminate\Support\Str;
+
 class ParameterCategoryController extends Controller
 {
    /**
@@ -49,6 +51,10 @@ class ParameterCategoryController extends Controller
             'nom_parametre' => 'required|string|max:255|unique:parametre_categories,nom_parametre',
         ],[
             'nom_parametre.unique' => 'Ce paramètre de catégorie de bien existe déjà'
+        ]);
+
+        $request->merge([
+            'keyparametrecategorie' => Str::uuid()->toString(),
         ]);
 
         $parametre = ParametreCategorie::create($request->all());

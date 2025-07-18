@@ -21,10 +21,6 @@
          @include('abonné.pages.abonnement.index')
     </div>
 
-    <div class="tab-pane fade" id="portefeuille" role="tabpanel" aria-labelledby="portefeuille-tab">
-         @include('abonné.pages.portefeuille.index')
-    </div>
-
 </div>
 
 @endsection

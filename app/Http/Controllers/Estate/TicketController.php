@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
+use Illuminate\Support\Str;
+
 class TicketController extends Controller
 {
     /**
@@ -97,6 +99,7 @@ class TicketController extends Controller
 
         Ticket::create([
             'titre' => $request->titre,
+            'keyticket' => Str::uuid()->toString(),
             'description' => $request->description,
             'piece_jointe' => $filePath ? Storage::url($filePath) : null,
             'statut' => 'ouvert',

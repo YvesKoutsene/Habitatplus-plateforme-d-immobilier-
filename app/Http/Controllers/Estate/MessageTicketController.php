@@ -9,6 +9,7 @@ use App\Events\MessageSent;
 use App\Models\MessageTicket;
 use App\Models\Ticket;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class MessageTicketController extends Controller
 {
@@ -38,6 +39,7 @@ class MessageTicketController extends Controller
 
         $messageTicket = MessageTicket::create([
             'user_id' => auth()->id(),
+            'keymessage' => Str::uuid()->toString(),
             'ticket_id' => $ticketId,
             'message' => $request->message,
         ]);

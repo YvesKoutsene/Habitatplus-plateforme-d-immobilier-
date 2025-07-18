@@ -7,6 +7,7 @@ use App\Models\CategorieBien;
 use Illuminate\Http\Request;
 
 use App\Models\CategorieTicket;
+use Illuminate\Support\Str;
 
 class CategoryTicketController extends Controller
 {
@@ -53,6 +54,7 @@ class CategoryTicketController extends Controller
         ]);
 
         $categorie = CategorieTicket::create([
+            'keycategorieticket' => Str::uuid()->toString(),
             'nom_categorie' => $validated['nom_categorie'],
             'description' => $validated['description'],
             'statut' => 'actif'

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Boost;
 use App\Models\Bien;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 class BoostController extends Controller
 {
@@ -50,6 +51,7 @@ class BoostController extends Controller
         }
 
         $boost = new Boost();
+        $boost->keyboost = Str::uuid()->toString();
         $boost->id_bien = $bien->id;
         $boost->type_boost = $request->type_boost;
         //$boost->duree = $request->duree;
