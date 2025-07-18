@@ -14,7 +14,6 @@
     </div>
     <div class="tab-pane fade" id="alertes" role="tabpanel" aria-labelledby="alertes-tab">
     </div>
-
     -->
 
     <div class="tab-pane fade" id="abonnements" role="tabpanel" aria-labelledby="abonnements-tab">
@@ -22,5 +21,21 @@
     </div>
 
 </div>
+
+<!-- Pour se rendre directement sur l'onglet abonnement -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetTab = urlParams.get('onglet');
+
+        if (targetTab) {
+            const tabTriggerEl = document.querySelector(`button[data-bs-target="#${targetTab}"]`);
+            if (tabTriggerEl) {
+                const tab = new bootstrap.Tab(tabTriggerEl);
+                tab.show();
+            }
+        }
+    });
+</script>
 
 @endsection

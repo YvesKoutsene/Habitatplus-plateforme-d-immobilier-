@@ -1,5 +1,4 @@
 <div class="profile-card container my-5">
-    <!-- En-tête profil -->
     <div class="profile-header position-relative text-center text-white p-5 rounded-top">
         <img src="{{ asset(Auth::user()->photo_profil) }}"
              alt="Photo de profil"
@@ -16,9 +15,7 @@
         <p class="text-light opacity-75 mb-0">Actif depuis {{ $diff }}</p>
     </div>
 
-    <!-- Corps -->
     <div class="card-body bg-white p-4 rounded-bottom shadow-sm">
-        <!-- Parrainage -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             @php
                 $code = auth()->user()->parrainage?->code;
@@ -36,7 +33,6 @@
             @endif
         </div>
 
-        <!-- Portefeuille -->
         <div class="wallet-card shadow-lg p-4 mb-4 border-0 rounded-4 overflow-hidden position-relative text-white" style="background: linear-gradient(135deg, #1e1e2f, #3c3c5c);">
             <div class="position-absolute top-0 start-0 w-100" style="height: 8px; background: linear-gradient(90deg, #ff416c, #ff4b2b); z-index: 1;"></div>
             <div class="position-absolute opacity-10" style="top: 10px; right: 20px; font-size: 5rem;">
@@ -49,7 +45,6 @@
             </button>
         </div>
 
-        <!-- Boutons d'action -->
         <div class="d-flex flex-wrap justify-content-center gap-3">
             <button class="btn btn-primary rounded-pill px-4 shadow" data-bs-toggle="modal" data-bs-target="#editProfileModal">
                 <i class="bi bi-pencil-square me-2"></i> Modifier profil
@@ -100,7 +95,6 @@
         background-color: #007bff;
         border-color: #007bff;
     }
-
     .btn-primary:hover {
         background-color: #0056b3;
         transform: translateY(-3px);
@@ -129,16 +123,15 @@
     .btn-secondary:hover {
         background-color: rgba(76, 91, 20, 0.66);
         transform: translateY(-3px);
-
+    }
 </style>
 
 <script>
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(function () {
-        alert('Code copié : ' + text);
-    }, function (err) {
-        alert('Erreur lors de la copie');
-    });
-}
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(function () {
+            alert('Code copié : ' + text);
+        }, function (err) {
+            alert('Erreur lors de la copie');
+        });
+    }
 </script>
-

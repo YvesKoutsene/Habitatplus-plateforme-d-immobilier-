@@ -77,14 +77,14 @@ class AnnouncementController extends Controller
     {
         $categories = CategorieBien::where('statut', '=', 'actif')->with('associations.parametre')->get();
 
-        return view('abonné.pages.announcement.create', compact('categories'));
+        return view('abonné.pages.announcement.create.create', compact('categories'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
 
-    //Fonction permettant d'enregistrer ou publier une annonce de bien
+    // Fonction permettant d'enregistrer ou publier une annonce de bien
     public function store(Request $request)
     {
         $action = $request->input('action', 'save');
@@ -102,10 +102,13 @@ class AnnouncementController extends Controller
                 'prix' => 'required|numeric|min:1',
                 'lieu' => 'required|string|max:200',
                 'type_offre' => 'required|string',
-                'photos.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'photos.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120',
                 'description' => 'required|string|max:200',
+
+                'videos.*' => 'video|mimes:mp4,avi,mov,wmv,mkv,flv,webm|max:20480', //20 Mo
+
             ],[
-                'photos.*.required' => 'Vous devez ajouter au moins la photo principale avant de publier'
+                'photos.*.required' => 'Vous devez ajouter au moins la photo principale avant de publier',
             ]);
         }
 
@@ -124,6 +127,7 @@ class AnnouncementController extends Controller
             'id_categorie_bien' => $validated['category'],
         ]);
 
+        // Pour les photos
         if ($request->hasFile('photos')) {
             foreach ($request->file('photos') as $photo) {
                 $photoName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $photo->getClientOriginalName());
@@ -133,6 +137,20 @@ class AnnouncementController extends Controller
                     'url_photo' => Storage::url($photoPath),
                     'id_bien' => $annonce->id,
                     'keyphoto' => Str::uuid()->toString(),
+                ]);
+            }
+        }
+
+        // Pour less videos
+        if ($request->hasFile('videos')) {
+            foreach ($request->file('videos') as $video) {
+                $videoName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $video->getClientOriginalName());
+                $videoPath = $video->storeAs('videos/annonces', $videoName, 'public');
+
+                VideoBien::create([
+                    'url_video' => Storage::url($videoPath),
+                    'id_bien' => $annonce->id,
+                    'keyvideo' => Str::uuid()->toString(),
                 ]);
             }
         }
@@ -173,7 +191,6 @@ class AnnouncementController extends Controller
         return view('abonné.pages.announcement.show', compact('bien'));
     }
 
-
     /**
      * Show the form for editing the specified resource.
      */
@@ -181,7 +198,7 @@ class AnnouncementController extends Controller
     //Fonction permettant de renvoyer la page de modification d'une annonce de bien
     public function edit($id)
     {
-        $bien = Bien::with(['photos', 'categorieBien', 'valeurs'])->findOrFail($id);
+        $bien = Bien::with(['photos', 'videos', 'categorieBien', 'valeurs'])->findOrFail($id);
         if ($bien->id_user !== auth()->id()) {
             return redirect()->back()->with('error', 'Vous n\'êtes pas autorisé à modifier cette annonce.');
         }
@@ -193,13 +210,15 @@ class AnnouncementController extends Controller
         $categories = CategorieBien::with('associations.parametre')->get();
         $parametresCategories = AssociationCategorieParametre::with('parametre')->get();
         $existingPhotoIds = $bien->photos->pluck('id')->toArray();
+        $existingVideoIds = $bien->videos->pluck('id')->toArray();
 
         //dd($bien);
-        return view('abonné.pages.announcement.edit', [
+        return view('abonné.pages.announcement.edit.edit', [
             'bien' => $bien,
             'categories' => $categories,
             'parametresCategories' => $parametresCategories,
             'existingPhotoIds' => $existingPhotoIds,
+            'existingVideoIds' => $existingVideoIds,
         ]);
     }
 
@@ -216,7 +235,7 @@ class AnnouncementController extends Controller
             return redirect()->back()->with('error', 'Impossible de modifier cette annonce.');
         }
 
-        //dd($request->all());
+        dd($request->all());
 
         $validationRules = [
             'category' => 'required|exists:categorie_biens,id',
@@ -250,6 +269,7 @@ class AnnouncementController extends Controller
         ]);
 
         $this->updatePhotos($bien, $request);
+        $this->updateVideos($bien, $request);
         $this->updateParameters($bien, $validated, $isCategoryChanged);
         $message = $action === 'publish' ? 'Annonce publiée avec succès!' : 'Annonce mise à jour avec succès!';
         return redirect()->route('dashboard')->with('success', $message);
@@ -259,6 +279,7 @@ class AnnouncementController extends Controller
      * Gère la mise à jour des photos du bien.
      */
 
+    // Pour mise à jour de photos
     protected function updatePhotos($bien, $request)
     {
         $existingPhotoIds = $request->input('existing_photos', []);
@@ -302,16 +323,66 @@ class AnnouncementController extends Controller
                     PhotoBien::create([
                         'url_photo' => Storage::url($photoPath),
                         'id_bien' => $bien->id,
+                        'keyphoto' => Str::uuid()->toString(),
                     ]);
                 }
             }
         }
     }
 
-    /**
-     * Gère la mise à jour des valeurs des paramètres.
-     */
+    // Pour mise à jour de videos
+    protected function updateVideos($bien, $request)
+    {
+        $existingVideoIds = $request->input('existing_videos', []);
 
+        $deletedVideoIds = $request->input('deleted_videos', []);
+        foreach ($deletedVideoIds as $videoId) {
+            if ($videoId) {
+                $video = $bien->videos()->find($videoId);
+                if ($video) {
+                    $videoPath = str_replace('/storage', 'public', $video->url_video);
+                    Storage::delete($videoPath);
+                    $video->delete();
+                }
+            }
+        }
+        if ($request->hasFile('videos')) {
+            foreach ($request->file('videos') as $index => $newVideoFile) {
+                if (isset($existingVideoIds[$index])) {
+                    $videoId = $existingVideoIds[$index];
+                    $video = $bien->videos()->find($videoId);
+
+                    if ($video) {
+                        $oldVideoPath = str_replace('/storage', 'public', $video->url_video);
+                        Storage::delete($oldVideoPath);
+
+                        $videoName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $newVideoFile->getClientOriginalName());
+                        $newVideoPath = $newVideoFile->storeAs('videos/annonces', $videoName, 'public');
+
+                        $video->update(['url_video' => Storage::url($newVideoPath)]);
+                    }
+                }
+            }
+        }
+
+        if ($request->hasFile('videos')) {
+            foreach ($request->file('videos') as $index => $video) {
+                if (!isset($existingVideoIds[$index])) {
+                    $videoName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $photo->getClientOriginalName());
+                    $videoPath = $photo->storeAs('videos/annonces', $videoName, 'public');
+
+                    VideoBien::create([
+                        'url_photo' => Storage::url($photoPath),
+                        'id_bien' => $bien->id,
+                        'keyvideo' => Str::uuid()->toString(),
+                    ]);
+                }
+            }
+        }
+    }
+
+
+     // Gère la mise à jour des valeurs des paramètres.
     protected function updateParameters($bien, $validated, $isCategoryChanged)
     {
         $currentValues = $bien->valeurs()->get();

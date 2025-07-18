@@ -28,6 +28,11 @@ class Bien extends Model
         return $this->hasMany(PhotoBien::class, 'id_bien');
     }
 
+    public function videos()
+    {
+        return $this->hasMany(VideoBien::class, 'id_bien');
+    }
+
     public function valeurs()
     {
         return $this->hasMany(ValeurBien::class, 'id_bien');

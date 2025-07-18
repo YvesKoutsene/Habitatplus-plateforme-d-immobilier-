@@ -153,6 +153,10 @@
                                             <div class="mb-3">
                                                 <label for="duree" class="form-label text-black">Durée<span class="text-danger" title="obligatoire">*</span></label>
                                                 <div class="row">
+                                                    <div class="col-5 col-md-5">
+                                                        <input type="text" id="duree"  min="1"  name="duree" class="form-control form-control-sm" required placeholder="Ex: 7" oninput="validateInputDuree()" value="7" disabled>
+                                                        <div class="invalid-feedback">Veuillez entrer une durée!</div>
+                                                    </div>
                                                     <div class="col-7 col-md-7 mb-2 mb-md-0">
                                                         <select id="boost_unite_duree" class="form-select form-control form-select-sm" name="unite_duree" required>
                                                             <!--<option value="" disabled selected>Sélectionnez une unité</option>-->
@@ -161,10 +165,6 @@
                                                             <option value="mois">Mois</option>
                                                             <option value="annee">Année</option>-->
                                                         </select>
-                                                    </div>
-                                                    <div class="col-5 col-md-5">
-                                                        <input type="text" id="duree"  min="1"  name="duree" class="form-control form-control-sm" required placeholder="Ex: 30" oninput="validateInputDuree()" value="30" disabled>
-                                                        <div class="invalid-feedback">Veuillez entrer une durée!</div>
                                                     </div>
                                                 </div>
                                             </div>
