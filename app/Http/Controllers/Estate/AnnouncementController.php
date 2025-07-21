@@ -16,11 +16,7 @@ use Illuminate\Support\Str;
 
 class AnnouncementController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-
-    //Fonction permettant d'afficher la liste des biens publiés dans la base de données
+    // Fonction permettant d'afficher la liste des biens publiés dans la base de données
     public function index(Request $request)
     {
         $search = $request->input('search', '');
@@ -45,7 +41,7 @@ class AnnouncementController extends Controller
         return view('admin.pages.announcement.index', compact('biens', 'search', 'perPage'));
     }
 
-    //Fonction permettant d'afficher la liste des biens bloqués dans la base de données
+    // Fonction permettant d'afficher la liste des biens bloqués dans la base de données
     public function index02(Request $request)
     {
         $search = $request->input('search', '');
@@ -69,11 +65,7 @@ class AnnouncementController extends Controller
         return view('admin.pages.announcement.index02', compact('biens', 'search', 'perPage'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-
-    //Fonction permettant de renvoyer la page de création d'annonce
+    // Fonction permettant de renvoyer la page de création d'annonce
     public function create()
     {
         $categories = CategorieBien::where('statut', '=', 'actif')->with('associations.parametre')->get();
@@ -81,17 +73,12 @@ class AnnouncementController extends Controller
         return view('abonné.pages.announcement.create.create', compact('categories'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-
     // Fonction permettant d'enregistrer ou publier une annonce de bien
     public function store(Request $request)
     {
         $action = $request->input('action', 'save');
 
         //dd($request->all());
-        //dd($request->file('videos'));
 
         $validationRules = [
             'category' => 'required|exists:categorie_biens,id',
@@ -175,14 +162,10 @@ class AnnouncementController extends Controller
         return redirect()->route('dashboard')->with('success', $message);
     }
 
-    /**
-     * Display the specified resource.
-     */
-
-    //Fonction permettant d'afficher la liste des annonces d'un abonné
+    // Fonction permettant d'afficher la liste des annonces d'un abonné
     public function show($id)
     {
-        $bien = Bien::with(['user','categorieBien', 'photos', 'valeurs'])->findOrFail($id);
+        $bien = Bien::with(['user','categorieBien', 'photos', 'valeurs', 'videos'])->findOrFail($id);
 
         if (!$bien) {
             return redirect()->back()->with('error', 'Annonce introuvable.');
@@ -193,11 +176,7 @@ class AnnouncementController extends Controller
         return view('abonné.pages.announcement.show', compact('bien'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-
-    //Fonction permettant de renvoyer la page de modification d'une annonce de bien
+    // Fonction permettant de renvoyer la page de modification d'une annonce de bien
     public function edit($id)
     {
         $bien = Bien::with(['photos', 'videos', 'categorieBien', 'valeurs'])->findOrFail($id);
@@ -224,7 +203,7 @@ class AnnouncementController extends Controller
         ]);
     }
 
-    //Fonction permettant de mettre à jour un bien immobilier
+    // Fonction permettant de mettre à jour un bien immobilier
     public function update(Request $request, $id)
     {
         $action = $request->input('action', 'save');
@@ -276,10 +255,6 @@ class AnnouncementController extends Controller
         $message = $action === 'publish' ? 'Annonce publiée avec succès!' : 'Annonce mise à jour avec succès!';
         return redirect()->route('dashboard')->with('success', $message);
     }
-
-    /**
-     * Gère la mise à jour des photos du bien.
-     */
 
     // Pour mise à jour de photos
     protected function updatePhotos($bien, $request)
@@ -370,11 +345,11 @@ class AnnouncementController extends Controller
         if ($request->hasFile('videos')) {
             foreach ($request->file('videos') as $index => $video) {
                 if (!isset($existingVideoIds[$index])) {
-                    $videoName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $photo->getClientOriginalName());
-                    $videoPath = $photo->storeAs('videos/annonces', $videoName, 'public');
+                    $videoName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $video->getClientOriginalName());
+                    $videoPath = $video->storeAs('videos/annonces', $videoName, 'public');
 
                     VideoBien::create([
-                        'url_photo' => Storage::url($photoPath),
+                        'url_video' => Storage::url($videoPath),
                         'id_bien' => $bien->id,
                         'keyvideo' => Str::uuid()->toString(),
                     ]);
@@ -382,7 +357,6 @@ class AnnouncementController extends Controller
             }
         }
     }
-
 
      // Gère la mise à jour des valeurs des paramètres.
     protected function updateParameters($bien, $validated, $isCategoryChanged)
@@ -429,11 +403,7 @@ class AnnouncementController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-
-    //Fonction permettant de mettre fin une annonce (annuler une annonce)
+    // Fonction permettant de mettre fin une annonce (annuler une annonce)
     public function terminate($id)
     {
         $annonce = Bien::find($id);
@@ -453,7 +423,7 @@ class AnnouncementController extends Controller
         return redirect()->route('dashboard')->with('success', 'Annonce annulée avec succès.');
     }
 
-    //Fonction permettant de relancer une annonce
+    // Fonction permettant de relancer une annonce
     public function relaunch($id)
     {
         $annonce = Bien::find($id);
@@ -475,7 +445,7 @@ class AnnouncementController extends Controller
         return redirect()->route('dashboard')->with('success', 'Annonce republiée avec succès.');
     }
 
-    //Fonction permettant de publier une annonce brouillon
+    // Fonction permettant de publier une annonce brouillon
     public function publish($id)
     {
         $annonce = Bien::find($id);
@@ -497,7 +467,7 @@ class AnnouncementController extends Controller
         return redirect()->route('dashboard')->with('success', 'Annonce publiée avec succès.');
     }
 
-    //Fonction permettant à un abonné de supprimer une de ses annonces
+    // Fonction permettant à un abonné de supprimer une de ses annonces
     public function destroy($id)
     {
         $annonce = Bien::with('photos')->findOrFail($id);
@@ -519,7 +489,7 @@ class AnnouncementController extends Controller
         return redirect()->route('dashboard')->with('success', 'Annonce supprimée avec succès!');
     }
 
-    //Fonction pour affiche le details d'une annonce pour un super ou admin
+    // Fonction pour affiche le details d'une annonce pour un super ou admin
     public function details($id)
     {
         $bien = Bien::with(['user','categorieBien', 'photos', 'valeurs'])->findOrFail($id);

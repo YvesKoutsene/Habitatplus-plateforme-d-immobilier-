@@ -20,26 +20,50 @@ $@php
         </span>
     </h5>
     <div class="card shadow-lg border-0 rounded-lg mb-4">
+        @php
+            $medias = [];
+            if (!empty($bien->photos)) {
+                foreach ($bien->photos as $photo) {
+                    $medias[] = [
+                        'type' => 'photo',
+                        'url' => $photo->url_photo,
+                    ];
+                }
+            }
+            if (!empty($bien->videos)) {
+                foreach ($bien->videos as $video) {
+                    $medias[] = [
+                        'type' => 'video',
+                        'url' => $video->url_video,
+                    ];
+                }
+            }
+        @endphp
         <div id="bienCarousel" class="carousel slide" data-bs-ride="carousel">
             <ol class="carousel-indicators">
-                @if($bien->photos && count($bien->photos) > 0)
-                @foreach($bien->photos as $index => $photo)
-                <li data-bs-target="#bienCarousel" data-bs-slide-to="{{ $index }}" class="{{ $index === 0 ? 'active' : '' }}"></li>
-                @endforeach
-                @endif
+                @forelse($medias as $index => $media)
+                    <li data-bs-target="#bienCarousel" data-bs-slide-to="{{ $index }}" class="{{ $index === 0 ? 'active' : '' }}"></li>
+                @empty
+                    <li data-bs-target="#bienCarousel" data-bs-slide-to="0" class="active"></li>
+                @endforelse
             </ol>
             <div class="carousel-inner">
-                @if($bien->photos && count($bien->photos) > 0)
-                @foreach($bien->photos as $index => $photo)
-                <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                    <img src="{{ asset($photo->url_photo) }}" class="d-block w-100 rounded" alt="Photo du bien">
-                </div>
-                @endforeach
-                @else
-                <div class="carousel-item active">
-                    <img src="{{ asset('/storage/images/annonces/default_main_image.jpg') }}" class="d-block w-100 rounded" alt="Image par défaut">
-                </div>
-                @endif
+                @forelse($medias as $index => $media)
+                    <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                        @if($media['type'] === 'photo')
+                            <img src="{{ asset($media['url']) }}" class="d-block w-100 rounded media-item" alt="Photo du bien">
+                        @elseif($media['type'] === 'video')
+                            <video controls class="d-block w-100 rounded media-item">
+                                <source src="{{ asset($media['url']) }}" type="video/mp4">
+                                Votre navigateur ne supporte pas la lecture de la vidéo.
+                            </video>
+                        @endif
+                    </div>
+                @empty
+                    <div class="carousel-item active">
+                        <img src="{{ asset('/storage/images/annonces/default_main_image.jpg') }}" class="d-block w-100 rounded" alt="Image par défaut">
+                    </div>
+                @endforelse
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#bienCarousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -50,25 +74,13 @@ $@php
                 <span class="visually-hidden">Suivant</span>
             </button>
         </div>
-        <div class="d-flex justify-content-center gap-2 mt-3">
-            @if($bien->photos && count($bien->photos) > 0)
-            @foreach($bien->photos as $index => $photo)
-            <img src="{{ asset($photo->url_photo) }}" class="img-thumbnail" style="cursor: pointer;" alt="Photo miniature" data-bs-target="#bienCarousel" data-bs-slide-to="{{ $index }}">
-            @endforeach
-            @else
-            <img src="{{ asset('/storage/images/annonces/default_main_image.jpg') }}" class="img-thumbnail" style="cursor: pointer;" alt="Photo miniature">
-            @endif
-        </div>
-
-        @php
-        $createdAt = \Carbon\Carbon::parse($bien->datePublication);
-        $now = \Carbon\Carbon::now();
-        $diffInDays = $createdAt->diffInDays($now);
-        $diffInMonths = $createdAt->diffInMonths($now);
-        $diffInYears = $createdAt->diffInYears($now);
-        $diffInHours = $createdAt->diffInHours($now);
-        $diffInMins = $createdAt->diffInMinutes($now);
-        @endphp
+        @if(count($bien->photos) > 0)
+            <div class="d-flex justify-content-center gap-2 mt-3">
+                @foreach($bien->photos as $index => $photo)
+                    <img src="{{ asset($photo->url_photo) }}" class="img-thumbnail" style="cursor: pointer;" alt="Photo miniature" data-bs-target="#bienCarousel" data-bs-slide-to="{{ $index }}">
+                @endforeach
+            </div>
+        @endif
 
         <div class="d-flex align-items-center justify-content-between mt-4 p-3 border-top">
             <div class="d-flex align-items-start gap-3">
@@ -76,20 +88,8 @@ $@php
                 <div>
                     <h6 class="mb-1">{{ Str::limit($bien->user->name, 20, '...') }}</h6>
                     @if($bien->statut == 'publié')
-                        <p class="text-black-50 small">Publié il y a
-                            @if ($diffInYears > 0)
-                            {{ $diffInYears }} an{{ $diffInYears > 1 ? 's' : '' }}
-                            @elseif ($diffInMonths > 0)
-                            {{ $diffInMonths }} mois
-                            @elseif ($diffInDays > 7)
-                            {{ floor($diffInDays / 7) }} semaine{{ floor($diffInDays / 7) > 1 ? 's' : '' }}
-                            @elseif ($diffInDays > 0)
-                            {{ $diffInDays }} jour{{ $diffInDays > 1 ? 's' : '' }}
-                            @elseif ($diffInHours > 0)
-                            {{ $diffInHours }} heure{{ $diffInHours > 1 ? 's' : '' }}
-                            @else
-                            {{ $diffInMins }} minute{{ $diffInMins > 1 ? 's' : '' }}
-                            @endif
+                        <p class="text-black-50 small">
+                            Publié {{ \Carbon\Carbon::parse($bien->datePublication)->diffForHumans() }}
                         </p>
                     @else
                         <p class="text-black-50 small">Non publiée
@@ -120,7 +120,6 @@ $@php
                     </button>
                     @endif
                 </div>
-
             </li>
         </ul>
         <h5 class="mt-4 text-center">Caractéristiques du bien</h5>
@@ -142,31 +141,29 @@ $@php
         <h5 class="text-success text-center mt-4">Contact & <span class="text-danger">Signalement</span></h5>
         <div class="d-flex flex-column gap-3 p-3">
             @php
-            $url = url()->current();
-            $message = "Je suis intéressé par votre annonce de bien \"{$bien->titre}\" publiée sur Habitat+. Lien de l'annonce : {$url}";
-            $encodedMessage = urlencode($message);
+                $url = url()->current();
+                $message = "Je suis intéressé par votre annonce de bien \"{$bien->titre}\" publiée sur Habitat+. Lien de l'annonce : {$url}";
+                $encodedMessage = urlencode($message);
             @endphp
-
             @auth
-            <a href="https://wa.me/{{ $bien->user->numero }}?text={{ $encodedMessage }}" class="btn btn-success d-flex align-items-center justify-content-center gap-2" target="_blank">
-                <i class="bi bi-whatsapp fs-5"></i>
-                <span>WhatsApp</span>
-            </a>
-            <button class="btn btn-outline-danger d-flex align-items-center justify-content-center gap-2" data-bs-toggle="modal" data-bs-target="#reportModal">
-                <i class="bi bi-flag fs-5"></i>
-                <span>Signaler cette annonce</span>
-            </button>
+                <a href="https://wa.me/{{ $bien->user->numero }}?text={{ $encodedMessage }}" class="btn btn-success d-flex align-items-center justify-content-center gap-2" target="_blank">
+                    <i class="bi bi-whatsapp fs-5"></i>
+                    <span>WhatsApp</span>
+                </a>
+                <button class="btn btn-outline-danger d-flex align-items-center justify-content-center gap-2" data-bs-toggle="modal" data-bs-target="#reportModal">
+                    <i class="bi bi-flag fs-5"></i>
+                    <span>Signaler cette annonce</span>
+                </button>
             @else
-            <a href="{{ route('acceuil',['showModal' => 'create']) }}" class="btn btn-warning d-flex align-items-center justify-content-center gap-2">
-                <i class="bi bi-lock fs-5"></i>
-                <span>Connectez-vous pour contacter le propriétaire</span>
-            </a>
-            <a href="{{ route('acceuil',['showModal' => 'create']) }}" class="btn btn-outline-danger d-flex align-items-center justify-content-center gap-2">
-                <i class="bi bi-lock fs-5"></i>
-                <span>Connectez-vous pour signaler cette annonce</span>
-            </a>
+                <a href="{{ route('acceuil',['showModal' => 'create']) }}" class="btn btn-warning d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-lock fs-5"></i>
+                    <span>Connectez-vous pour contacter le propriétaire</span>
+                </a>
+                <a href="{{ route('acceuil',['showModal' => 'create']) }}" class="btn btn-outline-danger d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-lock fs-5"></i>
+                    <span>Connectez-vous pour signaler cette annonce</span>
+                </a>
             @endauth
-
         </div>
     </div>
 
@@ -184,9 +181,7 @@ $@php
             @endif
         @endif
     @endauth
-
 </div>
-
 <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -218,11 +213,20 @@ $@php
         font-family: 'Roboto', sans-serif;
     }
 
-    .carousel img {
-        border-bottom: 3px solid #007bff;
+    .media-item {
         object-fit: cover;
         width: 100%;
         height: 400px;
+    }
+    .img-thumbnail {
+        width: 60px;
+        height: 60px;
+        border-radius: 10px;
+        transition: transform 0.3s ease-in-out, border 0.3s ease;
+    }
+    .img-thumbnail:hover {
+        transform: scale(1.1);
+        border: 2px solid #007bff;
     }
 
     .card {
@@ -232,12 +236,10 @@ $@php
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         padding: 20px;
     }
-
     .card:hover {
         transform: translateY(-5px);
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
     }
-
     .card-title {
         font-size: 1rem;
         white-space: nowrap;
@@ -249,12 +251,10 @@ $@php
         border-radius: 25px;
         transition: all 0.3s ease;
     }
-
     .btn-primary:hover {
         background-color: #0056b3;
         border-color: #0056b3;
     }
-
     .btn-outline-primary:hover {
         background-color: #0056b3;
         color: #fff;
@@ -267,33 +267,22 @@ $@php
         border-radius: 8px;
         transition: background-color 0.3s ease;
     }
-
     .list-group-item:hover {
         background-color: #eaeaea;
-    }
-
-    .img-thumbnail {
-        width: 60px;
-        height: 60px;
-        border-radius: 10px;
-        transition: transform 0.3s ease-in-out, border 0.3s ease;
-    }
-
-    .img-thumbnail:hover {
-        transform: scale(1.1);
-        border: 2px solid #007bff;
     }
 
     @media (max-width: 768px) {
         .carousel img {
             height: auto;
         }
-
         .img-thumbnail {
             width: 50px;
             height: 50px;
         }
-
+        .media-item {
+            width: 50px;
+            height: 50px;
+        }
         .card {
             padding: 15px;
         }
@@ -306,22 +295,18 @@ $@php
     .btn-primary, .btn-outline-primary, .btn-success {
         transition: all 0.3s ease;
     }
-
     .btn-primary:hover {
         background-color: #0056b3;
         border-color: #0056b3;
     }
-
     .btn-outline-primary:hover {
         background-color: #0056b3;
         color: #fff;
     }
-
     .btn-success {
         background-color: #25D366;
         border-color: #25D366;
     }
-
     .btn-success:hover {
         background-color: #128C7E;
         border-color: #128C7E;
@@ -335,7 +320,6 @@ $@php
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         padding: 20px;
     }
-
     .like-icon:hover {
         transform: scale(1.2);
     }
@@ -352,13 +336,11 @@ $@php
         border-radius: 50%;
         border: 2px solid white;
     }
-
     .carousel-control-prev-icon::before,
     .carousel-control-next-icon::before {
         color: white;
         font-size: 1.5rem;
     }
-
     .carousel-control-prev:hover .carousel-control-prev-icon,
     .carousel-control-next:hover .carousel-control-next-icon {
         background-color: rgba(255, 255, 255, 0.8);

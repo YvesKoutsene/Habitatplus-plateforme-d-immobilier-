@@ -83,6 +83,7 @@
     }
 </script>
 
+<!-- Script pour les vidéos -->
 <script>
     let existingVideos = @json($existingVideoIds);
     let deletedVideos = [];
@@ -166,8 +167,6 @@
         setupVideoPreview(`video_${j}`, `preview_video_${j}`, `remove_video_${j}`, j);
     }
 </script>
-
-<!-- Script pour les vidéos-->
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
