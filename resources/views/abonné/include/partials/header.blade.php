@@ -141,6 +141,39 @@
     </div>
 </header>
 
+<!-- Modal publication limitée -->
+@if(session('limit_error'))
+<div class="modal fade" id="publicationLimitModal" tabindex="-1" aria-labelledby="publicationLimitLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow border-0">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="publicationLimitLabel"><i class="bi bi-exclamation-triangle me-2"></i> Limite atteinte</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body text-black">
+                <p>{{ session('error') }}</p>
+                <p>Pour publier plus de 3 annonces ce mois-ci, veuillez souscrire à un <strong>abonnement Pro</strong>.</p>
+            </div>
+            <div class="modal-footer">
+                <a href="{{ route('dashboard', ['onglet' => 'abonnements']) }}" class="btn btn-danger">
+                    <i class="bi bi-rocket"></i> Passer à Pro
+                </a>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
+@if(session('limit_error'))
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = new bootstrap.Modal(document.getElementById('publicationLimitModal'));
+        modal.show();
+    });
+</script>
+@endif
+
 <style>
     .bg-gradient {
         background: linear-gradient(90deg, #007bff, #0056b3);

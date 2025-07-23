@@ -6,18 +6,15 @@
     Aucune annonce disponible pour le moment.
 </div>
 @else
-
     @if(!$topBiens->isEmpty())
         <div class="pagetitle text-center mb-2">
             <p class="text-muted text-start">Top Annonces</p>
         </div>
-
         <div class="swiper mySwiper">
-
             <div class="swiper-wrapper">
                 @foreach($topBiens as $bien)
                     @php
-                        $isTop = optional($bien->boost)->type_boost === 'top' && optional($bien->boost)->statut === 'actif';
+                        $isTop = optional($bien->boost)->type_boost === 'top' && optional($bien->boostActif);
                     @endphp
                     <div class="swiper-slide">
                         <div class="card mb-4 {{ $isTop ? 'top-card' : '' }}">
@@ -38,7 +35,7 @@
                                     <i class="bi bi-geo-alt-fill text-danger"></i> {{ Str::limit($bien->lieu, 20, '...') }}<br>
                                     <strong>{{ number_format($bien->prix, 0, ',', ' ') }} FCFA</strong>
                                 </p>
-                                <a href="{{ route('announcement.show.costumer', $bien->id) }}" class="btn btn-outline-primary mt-auto">
+                                <a href="{{ route('announcement.show.costumer', $bien->keybien) }}" class="btn btn-outline-primary mt-auto">
                                     <i class="bi bi-eye"></i> Détails
                                 </a>
                             </div>
@@ -78,7 +75,7 @@
                                 <i class="bi bi-geo-alt-fill text-danger"></i> {{ Str::limit($bien->lieu, 20, '...') }}<br>
                                 <strong>{{ number_format($bien->prix, 0, ',', ' ') }} FCFA</strong>
                             </p>
-                            <a href="{{ route('announcement.show.costumer', $bien->id) }}" class="btn btn-outline-primary mt-auto">
+                            <a href="{{ route('announcement.show.costumer', $bien->keybien) }}" class="btn btn-outline-primary mt-auto">
                                 <i class="bi bi-eye"></i> Détails
                             </a>
                         </div>

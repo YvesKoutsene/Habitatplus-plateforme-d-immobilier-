@@ -102,16 +102,16 @@
                             </td>
                             <td>
                                 @if($model->parametres->isNotEmpty())
-                                @foreach($model->parametres->take(1) as $parametre)
-                                @if($parametre)
-                                <span class="badge bg-success">
-                                                        {{ $parametre->nom_parametre }}
-                                                        </span> :
-                                <span class="badge bg-warning">
-                                                        {{ $parametre->pivot->valeur }}
-                                                        </span>
-                                @endif
-                                @endforeach
+                                    @foreach($model->parametres->take(1) as $parametre)
+                                        @if($parametre)
+                                        <span class="badge bg-success">
+                                            {{ $parametre->nom_parametre }}
+                                        </span> :
+                                        <span class="badge bg-warning">
+                                            {{ $parametre->pivot->valeur }}
+                                        </span>
+                                        @endif
+                                    @endforeach
                                 @if($model->parametres->count() > 1)
                                 <button type="button" class="btn btn-sm btn-link p-0" data-bs-toggle="modal" data-bs-target="#parametersModal{{ $model->id }}">
                                     Voir plus ({{ $model->parametres->count() -1 }})
@@ -126,14 +126,12 @@
                                             <div class="modal-body">
                                                 <ul class="list-group">
                                                     @foreach($model->parametres as $parametre)
-                                                    @if($parametre)
-                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                        {{ $parametre->nom_parametre }}
-                                                        <span class="badge bg-primary rounded-pill">
-                                                                                        {{ $parametre->pivot->valeur }}
-                                                                                    </span>
-                                                    </li>
-                                                    @endif
+                                                        @if($parametre)
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                            {{ $parametre->nom_parametre }}
+                                                            <span class="badge bg-primary rounded-pill">{{ $parametre->pivot->valeur }}</span>
+                                                        </li>
+                                                        @endif
                                                     @endforeach
                                                 </ul>
                                             </div>
@@ -158,6 +156,8 @@
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
                                     @endif
+
+                                    <!--
                                     @if((Auth::user()->typeUser === 0 || Auth::user()->can('supprimer modèles d\'abonnements')) && ($model->abonnements->isEmpty()))
                                     <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteConfirmation{{ $model->id }}" data-bs-toggle="tooltip" title="Supprimer">
                                         <i class="bi bi-trash"></i>
@@ -185,6 +185,8 @@
                                         </div>
                                     </div>
                                     @endif
+                                    -->
+
                                 </div>
                             </td>
                         </tr>

@@ -117,7 +117,7 @@
                                         @endif
 
                                         @if(Auth::user()->typeUser === 0 || Auth::user()->can('editer rôles'))
-                                        <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-warning btn-sm me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Modifier">
+                                        <a href="{{ route('roles.edit', $role->keyrole) }}" class="btn btn-warning btn-sm me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Modifier">
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
                                         @endif

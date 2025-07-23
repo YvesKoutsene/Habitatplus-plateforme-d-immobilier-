@@ -77,7 +77,7 @@ Route::middleware(['auth', 'checkUserType:0,2','check.email.verified'])->group(f
     Route::resource('announcement', AnnouncementController::class);
     Route::put('announcement/{bien}/terminate', [AnnouncementController::class, 'terminate'])->name('announcement.terminate');
     Route::put('announcement/{bien}/relaunch', [AnnouncementController::class, 'relaunch'])->name('announcement.relaunch');
-    Route::put('announcement/{bien}/publish', [AnnouncementController::class, 'publish'])->name('announcement.publish');
+    Route::put('announcement/{bien}/publish', [AnnouncementController::class, 'publish'])->name('announcement.publish')->middleware('verifier.publication');
 
     Route::post('announcement/{bien}/boost', [BoostController::class, 'store'])->name('announcement.boost');
 
@@ -98,11 +98,10 @@ Route::middleware(['auth', 'checkUserType:2','check.email.verified'])->group(fun
 
 });
 
-
 #Pour les sans connecté (visiteurs)
 Route::middleware(['check.email.verified'])->group(function () {
     Route::get('/', [HomeController::class, 'indexHome'])->name('acceuil');
-    Route::get('announcement/{id}/details', [HomeController::class, 'show'])->name('announcement.show.costumer');
+    Route::get('announcement/{bien}/details', [HomeController::class, 'show'])->name('announcement.show.costumer');
 
 });
 

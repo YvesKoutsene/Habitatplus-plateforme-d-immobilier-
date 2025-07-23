@@ -24,7 +24,7 @@
 
                     @if(!$signalements->isEmpty())
                     <div class="d-flex mb-3 justify-content-between">
-                        <form action="{{ route('report.show', ['bien' => $bien->id]) }}" method="GET" class="d-flex">
+                        <form action="{{ route('report.show', ['bien' => $bien->keybien]) }}" method="GET" class="d-flex">
                             <select name="perPage" class="form-select me-2" onchange="this.form.submit()">
                                 <option value="5" {{ $perPage == 5 ? 'selected' : '' }}>5 entrées/page</option>
                                 <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10 entrées/page</option>
@@ -32,7 +32,7 @@
                                 <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50 entrées/page</option>
                             </select>
                         </form>
-                        <form action="{{ route('report.show', ['bien' => $bien->id]) }}" method="GET" class="d-flex">
+                        <form action="{{ route('report.show', ['bien' => $bien->keybien]) }}" method="GET" class="d-flex">
                             <input type="text" name="search" class="form-control me-2" placeholder="Taper ici pour chercher..." value="{{ request()->get('search') }}">
                             <button type="submit" class="btn btn-primary" title="Rechercher"><i class="bi bi-search"></i></button>
                         </form>

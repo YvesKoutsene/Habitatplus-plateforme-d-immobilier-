@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\Permission;
+use Illuminate\Support\Str;
 
 use Spatie\Permission\Models\Role;
 
@@ -62,7 +63,8 @@ class RoleController extends Controller
          try {
              $role = Role::create([
                  'name' => $request->name,
-                 'statut' => 'actif'
+                 'statut' => 'actif',
+                 'keyrole' => Str::uuid()->toString(),
              ]);
 
              $permissions = Permission::whereIn('id', $request->permissions)->get();
@@ -87,8 +89,19 @@ class RoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Role $role)
+    /*public function edit(Role $role)
     {
+        if ($role->name === 'Administrateur' || $role->name === 'Abonné') {
+            return redirect()->route('roles.index')->with('error', 'Vous ne pouvez pas modifier ce rôle.');
+        }
+
+        $permissions = Permission::with('children')->whereNull('parent_id')->get();
+        return view('admin.pages.roles.edit', compact('role', 'permissions'));
+    }*/
+
+    public function edit($keyrole)
+    {
+        $role = Role::where('keyrole', $keyrole)->firstOrFail();
 
         if ($role->name === 'Administrateur' || $role->name === 'Abonné') {
             return redirect()->route('roles.index')->with('error', 'Vous ne pouvez pas modifier ce rôle.');

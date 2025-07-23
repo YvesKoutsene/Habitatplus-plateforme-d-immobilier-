@@ -16,6 +16,12 @@ use Illuminate\Support\Str;
 
 class AnnouncementController extends Controller
 {
+    // Pour la vérification sur certaine fonction
+    public function __construct()
+    {
+        $this->middleware('verifier.publication')->only(['create', 'store', 'publish']);
+    }
+
     // Fonction permettant d'afficher la liste des biens publiés dans la base de données
     public function index(Request $request)
     {
@@ -91,13 +97,14 @@ class AnnouncementController extends Controller
                 'prix' => 'required|numeric|min:1',
                 'lieu' => 'required|string|max:200',
                 'type_offre' => 'required|string',
-                'photos.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120',
+                'photos.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'description' => 'required|string|max:200',
-
-                'videos.*' => 'video|mimes:mp4,avi,mov,wmv,mkv,flv,webm|max:20480', //20 Mo
+                'videos.*' => 'video|mimes:mp4,avi,mov,wmv,mkv,flv,webm|max:2048', // (20Mo - 20480)
 
             ],[
                 'photos.*.required' => 'Vous devez ajouter au moins la photo principale avant de publier',
+                'photos.*.max' => 'Vous avez dépassé la taille maximale par photo (Max 2Mo)',
+                'videos.*.max' => 'Vous avez dépassé la taille maximale par vidéo (Max 2Mo)',
             ]);
         }
 
@@ -163,9 +170,11 @@ class AnnouncementController extends Controller
     }
 
     // Fonction permettant d'afficher la liste des annonces d'un abonné
-    public function show($id)
+    public function show($keybien)
     {
-        $bien = Bien::with(['user','categorieBien', 'photos', 'valeurs', 'videos'])->findOrFail($id);
+        $bien = Bien::with(['user','categorieBien', 'photos', 'valeurs', 'videos'])
+                ->where('keybien', $keybien)
+                ->firstOrFail();
 
         if (!$bien) {
             return redirect()->back()->with('error', 'Annonce introuvable.');
@@ -177,9 +186,12 @@ class AnnouncementController extends Controller
     }
 
     // Fonction permettant de renvoyer la page de modification d'une annonce de bien
-    public function edit($id)
+    public function edit($keybien)
     {
-        $bien = Bien::with(['photos', 'videos', 'categorieBien', 'valeurs'])->findOrFail($id);
+        $bien = Bien::with(['photos', 'videos', 'categorieBien', 'valeurs'])
+                ->where('keybien', $keybien)
+                ->firstOrFail();
+
         if ($bien->id_user !== auth()->id()) {
             return redirect()->back()->with('error', 'Vous n\'êtes pas autorisé à modifier cette annonce.');
         }
@@ -216,12 +228,17 @@ class AnnouncementController extends Controller
             return redirect()->back()->with('error', 'Impossible de modifier cette annonce.');
         }
 
-        dd($request->all());
+        //dd($request->all());
 
         $validationRules = [
             'category' => 'required|exists:categorie_biens,id',
             'titre' => 'required|string|max:255',
             'photos.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'videos.*' => 'nullable|video|mimes:mp4,avi,mov,wmv,mkv,flv,webm|max:2048',
+        ];
+        $validationMessages = [
+            'photos.*.max' => 'Vous avez dépassé la taille maximale par photo (Max 2Mo)',
+            'videos.*.max' => 'Vous avez dépassé la taille maximale par vidéo (Max 2Mo)',
         ];
 
         if ($action === 'publish' && in_array($bien->statut, ['brouillon', 'terminé'])) {
@@ -490,18 +507,22 @@ class AnnouncementController extends Controller
     }
 
     // Fonction pour affiche le details d'une annonce pour un super ou admin
-    public function details($id)
+    public function details($keybien)
     {
-        $bien = Bien::with(['user','categorieBien', 'photos', 'valeurs'])->findOrFail($id);
+        $bien = Bien::with(['user', 'categorieBien', 'photos', 'valeurs'])
+                    ->where('keybien', $keybien)
+                    ->firstOrFail();
 
         if (!$bien) {
             return redirect()->back()->with('error', 'Annonce introuvable.');
         }
+
         if (!in_array($bien->statut, ['publié', 'bloqué', 'terminé'])) {
             return redirect()->back()->with('error', 'Cette annonce n\'est pas disponible.');
         }
 
         return view('admin.pages.announcement.show', compact('bien'));
     }
+
 
 }

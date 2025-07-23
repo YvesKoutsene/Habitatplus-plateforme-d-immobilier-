@@ -133,9 +133,11 @@ class TicketController extends Controller
      */
 
     //Fonction permettant d'afficher les details d'un ticket
-    public function show($id)
+    public function show($keyticket)
     {
-        $ticket = Ticket::with(['user','categorie'])->findOrFail($id);
+        $ticket = Ticket::with(['user','categorie'])
+            ->where('keyticket', $keyticket)
+            ->firstOrFail();
 
         if (!$ticket) {
             return redirect()->back()->with('error', 'Ticket introuvable.');

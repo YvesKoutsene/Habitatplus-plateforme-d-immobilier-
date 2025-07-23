@@ -76,12 +76,47 @@ $@php
                                      {{ \Carbon\Carbon::parse(auth()->user()->abonnementActif->date_fin)->translatedFormat('H:i') }}
                                 </button>
                             @else
-                                <a href="#" class="btn btn-outline-danger rounded-pill px-4">Passer à Pro</a>
+                                <a href="#" class="btn btn-outline-danger rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#abonnementProModal">
+                                    <i class="bi bi-rocket-takeoff me-2"></i>Passer à Pro
+                                </a>
                             @endif
                         @endif
                     </div>
                 </div>
             </div>
         @endforeach
+    </div>
+</div>
+
+<!-- Modale pour faire un abonnement Pro -->
+<div class="modal fade" id="abonnementProModal" tabindex="-1" aria-labelledby="abonnementProLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0 rounded-4">
+            <form action="" method="POST">
+                @csrf
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="abonnementProLabel"><i class="bi bi-rocket-takeoff me-2"></i>Souscrire à l'abonnement Pro</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+
+                <div class="modal-body text-black">
+                    <div class="mb-3">
+                        <label for="duree" class="form-label">Durée de l’abonnement</label>
+                        <select class="form-select form-control form-select-sm" id="duree" name="duree">
+                            <option value="1" selected>01 mois - 2 200 FCFA</option>
+                            <option value="12">12 mois - 25 000 FCFA</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Annuler
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-check-circle"></i> Valider et s’abonner
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>

@@ -121,7 +121,7 @@
                                     <div class="d-flex">
                                         @if(Auth::user()->typeUser === 0 || Auth::user()->can('editer utilisateurs'))
                                             @if($user->typeUser !== 2)
-                                            <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Modifier">
+                                            <a href="{{ route('users.edit', $user->keyuser) }}" class="btn btn-warning btn-sm me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Modifier">
                                                 <i class="bi bi-pencil-square"></i>
                                             </a>
                                             @endif

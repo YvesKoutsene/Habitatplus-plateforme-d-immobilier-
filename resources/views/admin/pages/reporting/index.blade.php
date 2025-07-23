@@ -174,12 +174,12 @@
                                 <td>
                                     <div class="d-flex">
                                         @if(Auth::user()->typeUser === 0 || Auth::user()->can('voir annonces'))
-                                        <a href="{{ route('announcement.details', $signal->bien->id) }}" class="btn btn-sm btn-outline-info me-2" title="Détails de l'annonce">
+                                        <a href="{{ route('announcement.details', $signal->bien->keybien) }}" class="btn btn-sm btn-outline-info me-2" title="Détails de l'annonce">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                         @endif
                                         @if(Auth::user()->typeUser === 0 || Auth::user()->can('voir signalements d\'une annonce'))
-                                        <a href="{{ route('report.show', $signal->bien->id) }}" class="btn btn-sm btn-info me-2" title="Information signalement">
+                                        <a href="{{ route('report.show', $signal->bien->keybien) }}" class="btn btn-sm btn-info me-2" title="Information signalement">
                                             <i class="bi bi-flag"></i>
                                         </a>
                                         @endif

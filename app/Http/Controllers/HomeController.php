@@ -109,9 +109,11 @@ class HomeController extends Controller
     }
 
     //Fonction d'affichage de page de details d'un bien
-    public function show($id)
+    public function show($keybien)
     {
-        $bien = Bien::with(['user', 'categorieBien', 'photos', 'valeurs'])->findOrFail($id);
+        $bien = Bien::with(['user', 'categorieBien', 'photos', 'valeurs'])
+                ->where('keybien', $keybien)
+                ->firstOrFail();
 
         if (!$bien) {
             return redirect()->back()->with('error', 'Annonce introuvable.');

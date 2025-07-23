@@ -93,27 +93,31 @@ class ReportingController extends Controller
      */
 
     //Fonction permettant d'afficher les signalements d'une annonce
-    public function show(Request $request, $id)
+    public function show(Request $request, $keybien)
     {
         $search = $request->input('search', '');
         $perPage = $request->input('perPage', 10);
 
-        $bien = Bien::findOrFail($id);
+        // On récupère le bien via keybien
+        $bien = Bien::where('keybien', $keybien)->firstOrFail();
 
+        // On construit la requête sur les signalements liés à ce bien
         $query = Signalement::with('user')
-            ->where('id_bien', $id)
+            ->where('id_bien', $bien->id)
             ->orderByDesc('created_at');
 
+        // Filtrage par recherche
         if (!empty($search)) {
             $query->where(function ($q) use ($search) {
                 $q->where('motif', 'LIKE', '%' . strtolower($search) . '%')
-                    ->orWhereHas('user', function ($userQuery) use ($search) {
-                        $userQuery->where('name', 'LIKE', '%' . strtolower($search) . '%');
-                    });
+                  ->orWhereHas('user', function ($userQuery) use ($search) {
+                      $userQuery->where('name', 'LIKE', '%' . strtolower($search) . '%');
+                  });
             });
         }
 
         $signalements = $query->paginate($perPage);
+
         return view('admin.pages.reporting.show', compact('bien', 'signalements', 'search', 'perPage'));
     }
 

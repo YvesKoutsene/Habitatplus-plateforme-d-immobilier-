@@ -94,19 +94,16 @@
                           </div>
                       </div>
                     </div>
-
+                    <div class="row mb-3">
+                      <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email<span class="text-danger" title="obligatoire">*</span></label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="email" type="email" class="form-control" id="Email" value="{{ old('name', auth()->user()->email) }}" disabled>
+                      </div>
+                    </div>
                     <div class="row mb-3">
                       <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Nom<span class="text-danger" title="obligatoire">*</span></label>
                       <div class="col-md-8 col-lg-9">
                         <input name="name" type="text" class="form-control" id="fullName" value="{{ old('name', auth()->user()->name) }}" required>
-                      </div>
-                    </div>
-
-                    <div class="row mb-3">
-                      <label for="Job" class="col-md-4 col-lg-3 col-form-label">Rôle</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="job" type="text" class="form-control" id="Job" value="{{ Auth::user()->typeUser === 0 ? 'Super Admin' : (Auth::user()->roles->first() ? ucfirst(Auth::user()->roles->first()->name) : 'Aucun rôle') }}"
-                               disabled>
                       </div>
                     </div>
 
@@ -124,9 +121,10 @@
                     </div>
 
                     <div class="row mb-3">
-                      <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email<span class="text-danger" title="obligatoire">*</span></label>
+                      <label for="Job" class="col-md-4 col-lg-3 col-form-label">Rôle</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="email" type="email" class="form-control" id="Email" value="{{ old('name', auth()->user()->email) }}" disabled>
+                        <input name="job" type="text" class="form-control" id="Job" value="{{ Auth::user()->typeUser === 0 ? 'Super Admin' : (Auth::user()->roles->first() ? ucfirst(Auth::user()->roles->first()->name) : 'Aucun rôle') }}"
+                               disabled>
                       </div>
                     </div>
 

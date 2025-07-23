@@ -125,12 +125,12 @@
                                             <td>
                                                 <div class="d-flex">
                                                     @if(Auth::user()->typeUser === 0 || Auth::user()->can('voir tickets'))
-                                                        <a href="{{ route('tckt.show', $ticket->id) }}" class="btn btn-sm btn-outline-info me-2" title="Détails du ticket">
+                                                        <a href="{{ route('tckt.show', $ticket->keyticket) }}" class="btn btn-sm btn-outline-info me-2" title="Détails du ticket">
                                                             <i class="bi bi-eye"></i>
                                                         </a>
                                                     @endif
                                                     @if(Auth::user()->typeUser === 0 || Auth::user()->can('répondre tickets'))
-                                                        <a href="{{ route('message.ticket', $ticket->id) }}" class="btn btn-sm btn-info me-2" title="Historique de traitement">
+                                                        <a href="{{ route('message.ticket', $ticket->keyticket) }}" class="btn btn-sm btn-info me-2" title="Historique de traitement">
                                                             <i class="bi bi-clock-history"></i>
                                                         </a>
                                                     @endif

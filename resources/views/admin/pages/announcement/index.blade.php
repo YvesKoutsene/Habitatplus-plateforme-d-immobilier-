@@ -177,7 +177,7 @@
                                 <td>
                                     <div class="d-flex">
                                         @if(Auth::user()->typeUser === 0 || Auth::user()->can('voir annonces'))
-                                        <a href="{{ route('announcement.details', $bien->id) }}" class="btn btn-sm btn-outline-info me-2" title="Détails de l'annonce">
+                                        <a href="{{ route('announcement.details', $bien->keybien) }}" class="btn btn-sm btn-outline-info me-2" title="Détails de l'annonce">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                         @endif

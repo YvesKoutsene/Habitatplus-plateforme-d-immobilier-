@@ -50,7 +50,7 @@
             @endfor
         </div>
         <div class="card-footer text-black">
-            <small class="text-muted">Formats de photo acceptés : <strong>JPEG, PNG, JPG, GIF</strong>. Taille max : <strong>5 Mo</strong>.</small>
+            <small class="text-muted">Formats de photo acceptés : <strong>JPEG, PNG, JPG, GIF</strong>. Taille max : <strong>2 Mo</strong>.</small>
         </div>
 
     </div>
@@ -101,7 +101,7 @@
             @endfor
         </div>
         <div class="card-footer text-black">
-            <small class="text-muted"> Formats de vidéos acceptés : <strong>MP4, AVI, MKV, FLV, MOV, WMV, WEBM</strong>. Taille max : <strong>20 Mo</strong>.
+            <small class="text-muted"> Formats de vidéos acceptés : <strong>MP4, AVI, MKV, FLV, MOV, WMV, WEBM</strong>. Taille max : <strong>2 Mo</strong>.
             </small>
         </div>
     </div>

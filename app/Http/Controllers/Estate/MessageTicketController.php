@@ -14,9 +14,11 @@ use Illuminate\Support\Str;
 class MessageTicketController extends Controller
 {
     //Fonction pour renvoyer la page de message d'un ticket
-    public function index($id)
+    public function index($keyticket)
     {
-        $ticket = Ticket::with('messages.user')->find($id);
+        $ticket = Ticket::with('messages.user')
+                ->where('keyticket', $keyticket)
+                ->firstOrFail();
 
         if (!$ticket) {
             return redirect()->route('tickets.index')->with('error', 'Ticket introuvable.');

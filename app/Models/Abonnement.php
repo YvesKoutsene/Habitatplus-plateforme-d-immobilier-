@@ -22,4 +22,15 @@ class Abonnement extends Model
         return $this->belongsTo(ModeleAbonnement::class);
     }
 
+    // Pour vérification de l'expiration de l'abonnement au cas ou on l'a pas mis à jour
+        # Convertion necessaire
+    protected $casts = [
+        'date_début' => 'datetime',
+        'date_fin' => 'datetime',
+    ];
+        # Ensuite la vérification
+    public function isExpired(): bool
+    {
+        return $this->date_fin ? $this->date_fin->lt(now()) : true;
+    }
 }

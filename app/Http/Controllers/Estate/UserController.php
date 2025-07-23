@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Rules;
 
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +25,6 @@ use App\Mail\CompteSuspenduMail;
 use App\Mail\CompteReactiveMail;
 
 use Illuminate\Support\Str;
-
 class UserController extends Controller
 {
 
@@ -134,14 +134,16 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(User $user)
+    public function edit($keyuser)
     {
+        $user = User::where('keyuser', $keyuser)->firstOrFail();
+
         if ($user->typeUser == 2) {
             return redirect()->route('users.index')
                 ->with('error', 'Cet utilisateur ne peut pas être modifié.');
         }
 
-        $roles = Role::where('statut', '=', 'actif')->get();
+        $roles = Role::where('statut', 'actif')->get();
         return view('admin.pages.users.edit', compact('user', 'roles'));
     }
 
@@ -164,9 +166,10 @@ class UserController extends Controller
 
         $validateUser = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+            //'email' => 'string|email|max:255|unique:users,email,' . $id,
             'current_password' => 'nullable|required_with:password|current_password',
-            'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
+            //'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
+            'password' => ['nullable', 'confirmed', Password::defaults()],
             'pays' => 'required|string',
             'numero' => 'required|string|max:15',
             'photo_profil' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
@@ -194,7 +197,7 @@ class UserController extends Controller
 
         $user->update([
             'name' => $request->name,
-            'email' => $request->email,
+            //'email' => $request->email,
             'password' => $request->password ? Hash::make($request->password) : $user->password,
             'pays' => $request->pays,
             'numero' => $request->numero,

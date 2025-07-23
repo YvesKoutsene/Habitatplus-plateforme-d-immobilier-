@@ -80,10 +80,12 @@
                                             </button>
                                         @endif
 
-                                        @if((Auth::user()->typeUser === 0 || Auth::user()->can('supprimer paramètres modèles d\'abonnements') && $parametre->associations->isEmpty()))
+                                        @if((Auth::user()->typeUser === 0 || Auth::user()->can('supprimer paramètres modèles d\'abonnements')))
+                                            @if($parametre->associations->isEmpty())
                                             <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteConfirmation{{ $parametre->id }}">
                                                 <i class="bi bi-trash" title="Supprimer"></i>
                                             </button>
+                                            @endif
                                         @endif
                                         <!-- Modal de confirmation de suppression -->
                                         <div class="modal fade" id="deleteConfirmation{{ $parametre->id }}" tabindex="-1" aria-labelledby="deleteConfirmationLabel{{ $parametre->id }}" aria-hidden="true">

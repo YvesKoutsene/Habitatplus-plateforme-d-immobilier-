@@ -46,6 +46,7 @@ return new class extends Migration
             $table->string('statut');
             $table->string('guard_name'); // For MyISAM use string('guard_name', 25);
             $table->timestamps();
+            $table->string('keyrole');
             if ($teams || config('permission.testing')) {
                 $table->unique([$columnNames['team_foreign_key'], 'name', 'guard_name']);
             } else {
