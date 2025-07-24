@@ -35,6 +35,8 @@ class HomeController extends Controller
                 $modeles = ModeleAbonnement::with('parametres')->get();
                 $tousParametres = ParametreModele::all();
 
+                // Renvoyer le solde de son portefeuille ici
+
                 return view('abonné.pages.auth.dashboard', compact('biens', 'modeles', 'tousParametres'));
 
             } else {
@@ -44,29 +46,6 @@ class HomeController extends Controller
 
         return redirect('acceuil');
     }
-
-    //Fonction pour taper sur la route "/" avec les biens publiés
-    /*public function indexHome(Request $request) {
-        $search = $request->input('search', '');
-        $perPage = $request->input('perPage', 32);
-
-        $query = Bien::with(['categorieBien'])
-            ->where('statut', 'publié')
-            ->orderBy('datePublication', 'desc');
-
-        if ($search) {
-            $query->where(function($q) use ($search) {
-                $q->whereRaw('LOWER(titre) LIKE ?', ['%' . strtolower($search) . '%'])
-                    ->orWhereRaw('LOWER(lieu) LIKE ?', ['%' . strtolower($search) . '%'])
-                    ->orWhereRaw('LOWER(type_offre) LIKE ?', ['%' . strtolower($search) . '%'])
-                    ->orWhereRaw('LOWER(description) LIKE ?', ['%' . strtolower($search) . '%']);
-            });
-        }
-
-        $biens = $query->paginate($perPage);
-
-        return view('welcome', compact('biens', 'search'));
-    }*/
 
     //Fonction permettant de renvoyer la page d'acceuil avec les annonces top et non boostée
     public function indexHome(Request $request) {
@@ -108,7 +87,7 @@ class HomeController extends Controller
         return view('welcome', compact('biens', 'topBiens', 'search'));
     }
 
-    //Fonction d'affichage de page de details d'un bien
+    // Fonction d'affichage de page de details d'un bien
     public function show($keybien)
     {
         $bien = Bien::with(['user', 'categorieBien', 'photos', 'valeurs'])

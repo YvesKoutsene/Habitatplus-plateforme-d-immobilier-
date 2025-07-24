@@ -5,7 +5,6 @@
     @csrf
     <h3 class="text-black-50 mb-4">Créer votre annonce</h3>
 
-
     <div class="card shadow-lg border-0 rounded-lg mb-4">
         <div class="card-header text-black">
             <h5>Photos de l'annonce</h5>

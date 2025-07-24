@@ -125,17 +125,17 @@
 
     @if(Auth::user()->typeUser === 0 || Auth::user()->can('voir abonnements'))
     <li class="nav-item">
-        <a class="nav-link collapsed {{ request()->is('abonnement*') ? 'active' : '' }}" data-bs-target="#tables02-nav" data-bs-toggle="collapse" href="#">
+        <a class="nav-link collapsed {{ request()->is('subscription*') ? 'active' : '' }}" data-bs-target="#tables02-nav" data-bs-toggle="collapse" href="#">
             <i class="bi bi-star"></i><span>Abonnements</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-        <ul id="tables02-nav" class="nav-content collapse {{ request()->is('abonnement*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+        <ul id="tables02-nav" class="nav-content collapse {{ request()->is('subscription*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
             <li>
-                <a href="#">
+                <a class="{{ request()->routeIs('subscription.list') ? 'active' : '' }}" href="{{ route('subscription.list') }}">
                     <i class="bi bi-circle"></i><span>Actifs</span>
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a class="{{ request()->routeIs('subscription.list02') ? 'active' : '' }}" href="{{ route('subscription.list02') }}">
                     <i class="bi bi-circle"></i><span>Expirés</span>
                 </a>
             </li>

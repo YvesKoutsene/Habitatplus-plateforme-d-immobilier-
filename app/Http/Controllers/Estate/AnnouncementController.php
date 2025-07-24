@@ -209,35 +209,6 @@ class AnnouncementController extends Controller
     }
 
     // Fonction permettant de renvoyer la page de modification d'une annonce de bien
-    /*public function edit($keybien)
-    {
-        $bien = Bien::with(['photos', 'videos', 'categorieBien', 'valeurs'])
-                ->where('keybien', $keybien)
-                ->firstOrFail();
-
-        if ($bien->id_user !== auth()->id()) {
-            return redirect()->back()->with('error', 'Vous n\'êtes pas autorisé à modifier cette annonce.');
-        }
-
-        if ($bien->statut == 'bloqué') {
-            return redirect()->back()->with('error', 'Impossible de modifier cette annonce.');
-        }
-
-        $categories = CategorieBien::with('associations.parametre')->get();
-        $parametresCategories = AssociationCategorieParametre::with('parametre')->get();
-        $existingPhotoIds = $bien->photos->pluck('id')->toArray();
-        $existingVideoIds = $bien->videos->pluck('id')->toArray();
-
-        //dd($bien);
-        return view('abonné.pages.announcement.edit.edit', [
-            'bien' => $bien,
-            'categories' => $categories,
-            'parametresCategories' => $parametresCategories,
-            'existingPhotoIds' => $existingPhotoIds,
-            'existingVideoIds' => $existingVideoIds,
-        ]);
-    }*/
-
     public function edit($keybien)
     {
         $bien = Bien::with(['photos', 'videos', 'categorieBien', 'valeurs'])

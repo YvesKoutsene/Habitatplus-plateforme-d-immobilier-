@@ -10,16 +10,16 @@ class Abonnement extends Model
     //
     use HasFactory;
 
-    protected $fillable = ['keyabonnement', 'duree', 'id_user', 'modele_id', 'date_début', 'date_fin', 'statut', 'createdby', 'updatedby'];
+    protected $fillable = ['keyabonnement', 'montant', 'duree', 'id_user', 'modele_id', 'date_début', 'date_fin', 'statut', 'createdby', 'updatedby'];
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'id_user');
     }
 
     public function modele()
     {
-        return $this->belongsTo(ModeleAbonnement::class);
+        return $this->belongsTo(ModeleAbonnement::class, 'modele_id');
     }
 
     // Pour vérification de l'expiration de l'abonnement au cas ou on l'a pas mis à jour

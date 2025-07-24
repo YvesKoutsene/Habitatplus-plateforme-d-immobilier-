@@ -4,6 +4,7 @@ use App\Http\Controllers\Estate\AnnouncementController;
 use App\Http\Controllers\Estate\CategoryBienController;
 use App\Http\Controllers\Estate\CategoryTicketController;
 use App\Http\Controllers\Estate\TicketController;
+use App\Http\Controllers\Estate\SubscriptionController;
 use App\Http\Controllers\Estate\ModelSubscriptionController;
 use App\Http\Controllers\Estate\ParameterCategoryController;
 use App\Http\Controllers\Estate\ParameterModelController;
@@ -70,6 +71,9 @@ Route::middleware(['auth', 'checkUserType:0,1','check.email.verified'])->group(f
     Route::put('announcement/admin/{bien}/block', [ReportingController::class, 'block'])->name('announcement.block');
     Route::put('announcement/admin/{bien}/reactivate', [ReportingController::class, 'reactivate'])->name('announcement.reactivate');
 
+    Route::get('subscription/list', [SubscriptionController::class, 'index'])->name('subscription.list');
+    Route::get('subscription/list/expired', [SubscriptionController::class, 'index02'])->name('subscription.list02');
+
 });
 
 #Pour super admin et abonné
@@ -96,6 +100,7 @@ Route::middleware(['auth', 'checkUserType:2','check.email.verified'])->group(fun
     Route::get('/ticket', [TicketController::class, 'create'])->name('ticket.create');
     Route::post('/ticket', [TicketController::class, 'store'])->name('ticket.store');
 
+    Route::post('/subscription/portefeuille', [SubscriptionController::class, 'store'])->name('subscription.store');
 });
 
 #Pour les sans connecté (visiteurs)

@@ -60,7 +60,7 @@
                             <th>#</th>
                             <th>Nom</th>
                             <th>Prix (FCFA)</th>
-                            <th>Durée (Mois)</th>
+                            <th>Durée</th>
                             <th>Description</th>
                             <th>Paramètres/valeurs</th>
                             <th>Date création</th>
@@ -73,7 +73,7 @@
                             <td>{{ $model->id }}</td>
                             <td>{{ ucfirst($model->nom) }}</td>
                             <td>{{ ($model->prix <= 0) ? 'Gratuit' : number_format($model->prix, 0, ',', ' ') }}</td>
-                            <td>{{ $model->duree }}</td>
+                            <td>{{ $model->duree }} Mois</td>
                             <td>
                                 @if(strlen($model->description) > 8)
                                 {{ ucfirst(substr($model->description, 0, 8)) }}...
@@ -199,7 +199,7 @@
                             <th>#</th>
                             <th>Nom</th>
                             <th>Prix (FCFA)</th>
-                            <th>Durée (Mois)</th>
+                            <th>Durée</th>
                             <th>Description</th>
                             <th>Paramètres/valeurs</th>
                             <th>Date création</th>

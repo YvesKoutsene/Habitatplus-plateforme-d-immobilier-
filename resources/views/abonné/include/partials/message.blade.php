@@ -1,4 +1,4 @@
-@if (session('success') || session('error') || $errors->any())
+@if (session('success') || session('error') || session('info') || $errors->any())
 <div class="alert-container">
     @if (session('success'))
     <div class="alert alert-primary bg-primary text-light border-0 alert-dismissible fade show shadow-lg" role="alert">
@@ -13,6 +13,13 @@
         <i class="bi bi-exclamation-octagon me-1"></i>
         <strong>Erreur :</strong> {{ session('error') }}
         <!--<button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>-->
+    </div>
+    @endif
+
+    @if (session('info'))
+    <div class="alert alert-info bg-info text-light border-0 alert-dismissible fade show shadow-lg" role="alert">
+        <i class="bi bi-info-circle me-1"></i>
+        <strong>Info :</strong> {{ session('info') }}
     </div>
     @endif
 

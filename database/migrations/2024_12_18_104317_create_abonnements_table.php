@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('keyabonnement')->unique();
             $table->integer('duree');
+            $table->decimal('montant', 10, 2);
             $table->dateTime('date_debut')->default(now());
             $table->dateTime('date_fin')->nullable();
             $table->string('statut');
