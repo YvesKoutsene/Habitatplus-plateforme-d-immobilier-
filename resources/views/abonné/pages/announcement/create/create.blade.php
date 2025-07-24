@@ -5,20 +5,16 @@
     @csrf
     <h3 class="text-black-50 mb-4">Créer votre annonce</h3>
 
+
     <div class="card shadow-lg border-0 rounded-lg mb-4">
         <div class="card-header text-black">
             <h5>Photos de l'annonce</h5>
-            <small class="text-muted">Vous pouvez ajouter jusqu'à 7 photos : une principale et 6 annexes.</small>
+            <small class="text-muted">Vous pouvez ajouter jusqu'à {{ $maxPhotos }} photos au max.</small>
         </div>
         <div class="card-body d-flex flex-wrap gap-3">
-            @php
-                $maxPhotos = 7;
-                $userHasSubscription = auth()->user()?->abonnementActif !== null;
-            @endphp
-
             @for ($i = 0; $i < $maxPhotos; $i++)
                 @php
-                    $photoLocked = !$userHasSubscription && $i > 2;
+                    $photoLocked = !$userHasSubscription && $i >= $freemiumPhotos;
                 @endphp
 
                 <div class="d-flex flex-column align-items-center position-relative">
@@ -59,18 +55,13 @@
         <div class="card-header text-black">
             <h5>Vidéos de l'annonce</h5>
             <small class="text-muted">
-                Vous pouvez ajouter jusqu'à 2 vidéos : une principale et une annexe.
+                Vous pouvez ajouter jusqu'à {{ $maxVideos }} vidéos au max.
             </small>
         </div>
         <div class="card-body d-flex flex-wrap gap-3">
-            @php
-                $maxVideos = 2;
-                $userHasSubscription = auth()->user()?->abonnementActif !== null;
-            @endphp
-
             @for ($j = 0; $j < $maxVideos; $j++)
                 @php
-                    $videoLocked = !$userHasSubscription;
+                    $videoLocked = !$userHasSubscription && $j >= $freemiumVideos;
                 @endphp
 
                 <div class="d-flex flex-column align-items-center position-relative">

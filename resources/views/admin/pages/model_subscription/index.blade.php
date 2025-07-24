@@ -72,7 +72,7 @@
                         <tr>
                             <td>{{ $model->id }}</td>
                             <td>{{ ucfirst($model->nom) }}</td>
-                            <td>{{ number_format($model->prix, 0, ',', ' ') }}</td>
+                            <td>{{ ($model->prix <= 0) ? 'Gratuit' : number_format($model->prix, 0, ',', ' ') }}</td>
                             <td>{{ $model->duree }}</td>
                             <td>
                                 @if(strlen($model->description) > 8)
@@ -108,7 +108,7 @@
                                             {{ $parametre->nom_parametre }}
                                         </span> :
                                         <span class="badge bg-warning">
-                                            {{ $parametre->pivot->valeur }}
+                                            {{ ($parametre->pivot->valeur >= 999) ? 'Illimité' : number_format($parametre->pivot->valeur) }}
                                         </span>
                                         @endif
                                     @endforeach
@@ -129,7 +129,9 @@
                                                         @if($parametre)
                                                         <li class="list-group-item d-flex justify-content-between align-items-center">
                                                             {{ $parametre->nom_parametre }}
-                                                            <span class="badge bg-primary rounded-pill">{{ $parametre->pivot->valeur }}</span>
+                                                            <span class="badge bg-primary rounded-pill">
+                                                                {{ ($parametre->pivot->valeur >= 999) ? 'Illimité' : number_format($parametre->pivot->valeur) }}
+                                                            </span>
                                                         </li>
                                                         @endif
                                                     @endforeach

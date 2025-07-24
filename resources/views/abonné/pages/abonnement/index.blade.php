@@ -70,18 +70,20 @@ $@php
                             @endif
                         @else
                             @if( auth()->user()->abonnementActif )
-                                <button class="btn btn-outline-danger" disabled>
-                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                     Expire le {{ \Carbon\Carbon::parse(auth()->user()->abonnementActif->date_fin)->translatedFormat('d F Y') }} à
-                                     {{ \Carbon\Carbon::parse(auth()->user()->abonnementActif->date_fin)->translatedFormat('H:i') }}
-                                </button>
+                                <span class="text-muted small me-2">
+                                    Expire le <strong>{{ \Carbon\Carbon::parse(auth()->user()->abonnementActif->date_fin)->translatedFormat('d F Y') }}</strong>
+                                </span>
+                                <a href="#" class="btn btn-outline-danger rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#abonnementProModal">
+                                    <i class="bi bi-arrow-repeat me-1"></i> Se réabonner
+                                </a>
                             @else
                                 <a href="#" class="btn btn-outline-danger rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#abonnementProModal">
-                                    <i class="bi bi-rocket-takeoff me-2"></i>Passer à Pro
+                                    <i class="bi bi-rocket-takeoff me-2"></i> Passer à Pro
                                 </a>
                             @endif
                         @endif
                     </div>
+
                 </div>
             </div>
         @endforeach

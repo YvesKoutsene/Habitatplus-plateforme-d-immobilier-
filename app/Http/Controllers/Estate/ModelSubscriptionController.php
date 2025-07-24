@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\AssociationModeleParametre;
 use App\Models\ParametreModele;
 use App\Models\ModeleAbonnement;
-
 use Illuminate\Support\Str;
+
 
 class ModelSubscriptionController extends Controller
 {
@@ -147,6 +147,7 @@ class ModelSubscriptionController extends Controller
                     'id_modele' => $modele->id,
                     'id_parametre' => $parametre['id'],
                     'valeur' => $parametre['valeur'],
+                    'keyassociationmodele' => Str::uuid()->toString(),
                 ]);
             }
         }

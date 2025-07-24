@@ -120,4 +120,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(CreditBoost::class, 'id_user');
     }
 
+    // Pour renvoyer les abonnements d'un user
+    public function abonnements()
+    {
+        return $this->hasMany(Abonnement::class, 'id_user');
+    }
+
 }

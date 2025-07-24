@@ -22,4 +22,21 @@ class ModeleAbonnement extends Model
         return $this->hasMany(Abonnement::class, 'modele_id');
     }
 
+    // Pour récuperer le modele d'abonnement Freemium
+    public static function getModeleFreemium(): ?self
+    {
+        return self::whereRaw('LOWER(nom) = ?', ['freemium'])
+                   ->orWhere('prix', 0)
+                   ->orderBy('id')
+                   ->first();
+    }
+
+    // Pour renvoyer la valeur d'un parametre d'un modele d'abonnement
+    public function getValeurParametre(string $nomParametre): ?string
+    {
+        return $this->parametres()
+            ->where('parametre_modeles.nom_parametre', $nomParametre)
+            ->first()?->pivot->valeur;
+    }
+
 }

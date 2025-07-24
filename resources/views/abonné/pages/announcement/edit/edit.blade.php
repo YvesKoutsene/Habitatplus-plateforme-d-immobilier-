@@ -14,15 +14,13 @@
         <div class="card-body d-flex flex-wrap gap-3">
             @php
                 $photos = $bien->photos;
-                $maxPhotos = 7;
-                $userHasSubscription = auth()->user()?->abonnementActif !== null;
             @endphp
 
             @for ($i = 0; $i < $maxPhotos; $i++)
                 @php
                     $photo = $photos[$i] ?? null;
                     $photoSrc = $photo ? asset($photo->url_photo) : '';
-                    $photoLocked = !$userHasSubscription && $i > 2;
+                    $photoLocked = !$userHasSubscription && $i >= $freemiumPhotos;
                 @endphp
 
                 <div class="d-flex flex-column align-items-center position-relative">
@@ -73,15 +71,13 @@
         <div class="card-body d-flex flex-wrap gap-3">
             @php
                 $videos = $bien->videos;
-                $maxVideos = 2;
-                $userHasSubscription = auth()->user()?->abonnementActif !== null;
             @endphp
 
             @for ($j = 0; $j < $maxVideos; $j++)
                 @php
                     $video = $videos[$j] ?? null;
                     $videoSrc = $video ? asset($video->url_video) : '';
-                    $videoLocked = !$userHasSubscription;
+                    $videoLocked = !$userHasSubscription && $j >= $freemiumVideos;
                 @endphp
 
                 <div class="d-flex flex-column align-items-center position-relative">

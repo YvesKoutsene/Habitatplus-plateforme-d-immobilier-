@@ -9,6 +9,7 @@ use App\Models\CategorieBien;
 use App\Models\PhotoBien;
 use App\Models\ValeurBien;
 use App\Models\VideoBien;
+use App\Models\ModeleAbonnement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -76,7 +77,29 @@ class AnnouncementController extends Controller
     {
         $categories = CategorieBien::where('statut', '=', 'actif')->with('associations.parametre')->get();
 
-        return view('abonné.pages.announcement.create.create', compact('categories'));
+        // Abonnement PRO
+        $pro = ModeleAbonnement::whereRaw('LOWER(nom) = ?', ['pro'])
+            ->orWhere('prix', '>', 0)
+            ->first();
+
+        $maxPhotos = $pro?->getValeurParametre('Photos/annonce') ?? 7;
+        $maxVideos = $pro?->getValeurParametre('Vidéos/annonce') ?? 2;
+
+        // Abonnement FREEMIUM
+        $freemium = ModeleAbonnement::whereRaw('LOWER(nom) = ?', ['freemium'])
+            ->orWhere('prix', 0)
+            ->first();
+
+        $freemiumPhotos = $freemium?->getValeurParametre('Photos/annonce') ?? 3;
+        $freemiumVideos = $freemium?->getValeurParametre('Vidéos/annonce') ?? 0;
+
+        $userHasSubscription = auth()->user()?->abonnementActif !== null;
+
+        return view('abonné.pages.announcement.create.create', compact('categories',
+            'maxPhotos', 'maxVideos',
+            'freemiumPhotos', 'freemiumVideos',
+            'userHasSubscription'
+        ));
     }
 
     // Fonction permettant d'enregistrer ou publier une annonce de bien
@@ -186,7 +209,7 @@ class AnnouncementController extends Controller
     }
 
     // Fonction permettant de renvoyer la page de modification d'une annonce de bien
-    public function edit($keybien)
+    /*public function edit($keybien)
     {
         $bien = Bien::with(['photos', 'videos', 'categorieBien', 'valeurs'])
                 ->where('keybien', $keybien)
@@ -213,6 +236,51 @@ class AnnouncementController extends Controller
             'existingPhotoIds' => $existingPhotoIds,
             'existingVideoIds' => $existingVideoIds,
         ]);
+    }*/
+
+    public function edit($keybien)
+    {
+        $bien = Bien::with(['photos', 'videos', 'categorieBien', 'valeurs'])
+                ->where('keybien', $keybien)
+                ->firstOrFail();
+
+        if ($bien->id_user !== auth()->id()) {
+            return redirect()->back()->with('error', 'Vous n\'êtes pas autorisé à modifier cette annonce.');
+        }
+
+        if ($bien->statut == 'bloqué') {
+            return redirect()->back()->with('error', 'Impossible de modifier cette annonce.');
+        }
+
+        $categories = CategorieBien::with('associations.parametre')->get();
+        $parametresCategories = AssociationCategorieParametre::with('parametre')->get();
+        $existingPhotoIds = $bien->photos->pluck('id')->toArray();
+        $existingVideoIds = $bien->videos->pluck('id')->toArray();
+
+        // Abonnement PRO
+        $pro = ModeleAbonnement::whereRaw('LOWER(nom) = ?', ['pro'])->orWhere('prix', '>', 0)->first();
+        $maxPhotos = $pro?->getValeurParametre('Photos/annonce') ?? 7;
+        $maxVideos = $pro?->getValeurParametre('Vidéos/annonce') ?? 2;
+
+        // Freemium
+        $freemium = ModeleAbonnement::whereRaw('LOWER(nom) = ?', ['freemium'])->orWhere('prix', 0)->first();
+        $freemiumPhotos = $freemium?->getValeurParametre('Photos/annonce') ?? 3;
+        $freemiumVideos = $freemium?->getValeurParametre('Vidéos/annonce') ?? 0;
+
+        $userHasSubscription = auth()->user()?->abonnementActif !== null;
+
+        return view('abonné.pages.announcement.edit.edit', compact(
+            'bien',
+            'categories',
+            'parametresCategories',
+            'existingPhotoIds',
+            'existingVideoIds',
+            'maxPhotos',
+            'maxVideos',
+            'freemiumPhotos',
+            'freemiumVideos',
+            'userHasSubscription'
+        ));
     }
 
     // Fonction permettant de mettre à jour un bien immobilier

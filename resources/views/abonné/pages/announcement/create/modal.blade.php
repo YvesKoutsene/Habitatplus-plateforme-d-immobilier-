@@ -25,9 +25,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
             <div class="modal-body text-black">
-                <p>Pour ajouter plus de 3 photos à vos annonces, vous devez passer à un abonnement <strong>Pro</strong>.
+                <p>Pour ajouter plus de <strong>{{ $freemiumPhotos }}</strong> photos à vos annonces, vous devez passer à un abonnement <strong>Pro</strong>.
                 </p>
-                <p>Avec l’abonnement Pro, vous pouvez ajouter jusqu’à <strong>7 photos</strong> par annonce.</p>
+                <p>Avec l’abonnement <strong>Pro</strong>, vous pouvez ajouter jusqu’à <strong>{{ $maxPhotos }}</strong> photos par annonce.</p>
             </div>
             <div class="modal-footer">
                 <a href="{{ route('dashboard', ['onglet' => 'abonnements']) }}" class="btn btn-danger">
@@ -49,7 +49,7 @@
             </div>
             <div class="modal-body text-black">
                 <p>Les vidéos sont réservées aux membres <strong>Pro</strong>.</p>
-                <p>Avec cet abonnement, vous pouvez ajouter des vidéos à vos annonces pour attirer plus d'attention.</p>
+                <p>Avec cet abonnement, vous pouvez ajouter jusqu’à <strong>{{ $maxVideos }}</strong> vidéos par annonce pour attirer plus d'attention.</p>
             </div>
             <div class="modal-footer">
                 <a href="{{ route('dashboard', ['onglet' => 'abonnements']) }}" class="btn btn-danger">

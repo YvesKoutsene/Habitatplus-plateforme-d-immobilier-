@@ -141,18 +141,26 @@
     </div>
 </header>
 
-<!-- Modal publication limitée -->
 @if(session('limit_error'))
 <div class="modal fade" id="publicationLimitModal" tabindex="-1" aria-labelledby="publicationLimitLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content shadow border-0">
             <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="publicationLimitLabel"><i class="bi bi-exclamation-triangle me-2"></i> Limite atteinte</h5>
+                <h5 class="modal-title" id="publicationLimitLabel">
+                    <i class="bi bi-exclamation-triangle me-2"></i> Limite atteinte
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
             <div class="modal-body text-black">
                 <p>{{ session('error') }}</p>
-                <p>Pour publier plus de 3 annonces ce mois-ci, veuillez souscrire à un <strong>abonnement Pro</strong>.</p>
+
+                @if(session('freemium_start') && session('freemium_end'))
+                    <p>Vous pourrez republier gratuitement à partir du
+                        <strong>{{ \Carbon\Carbon::createFromFormat('d/m/Y', session('freemium_end'))->addDay()->format('d/m/Y') }}</strong>.
+                    </p>
+                @endif
+
+                <p>Pour publier plus d’annonces ce mois-ci, pensez à souscrire à un <strong>abonnement Pro</strong>.</p>
             </div>
             <div class="modal-footer">
                 <a href="{{ route('dashboard', ['onglet' => 'abonnements']) }}" class="btn btn-danger">
@@ -163,9 +171,7 @@
         </div>
     </div>
 </div>
-@endif
 
-@if(session('limit_error'))
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const modal = new bootstrap.Modal(document.getElementById('publicationLimitModal'));

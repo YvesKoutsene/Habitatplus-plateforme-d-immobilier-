@@ -4,6 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use App\Models\ModeleAbonnement;
+use App\Models\ParametreModele;
+use App\Models\User;
 
 use Symfony\Component\HttpFoundation\Response;
 
@@ -16,36 +19,57 @@ class CheckPublication
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    /*public function handle(Request $request, Closure $next)
-    {
-        return $next($request);
-    }*/
 
     public function handle(Request $request, Closure $next): Response
     {
         $user = auth()->user();
 
         if (!$user) {
-            return redirect()->route('login')->with('error', 'Veuillez vous connecter pour publier une annonce.');
+            return redirect('/')->with('error', 'Veuillez vous connecter pour publier une annonce.');
         }
 
-        // Cas 1 : S'il a un abonnement actif NON expiré
+        // Cas 1 : Abonnement actif → pas de limite
         if ($user->abonnementActif && !$user->abonnementActif->isExpired()) {
             return $next($request);
         }
 
-        // Cas 2 : Non abonné ou abonnement expiré => vérifier le quota de 3 annonces/mois
-        $debutDuMois = now()->startOfMonth();
-        $finDuMois = now()->endOfMonth();
+        // Cas 2 : Freemium (non abonné ou abonnement expiré)
+        $freemium = ModeleAbonnement::where(function ($query) {
+            $query->whereRaw('LOWER(nom) = ?', ['freemium'])
+                  ->orWhere('prix', 0);
+        })->first();
 
-        $annoncesPublieesCeMois = $user->biens()
-            //->whereBetween('created_at', [$debutDuMois, $finDuMois])
-            ->whereBetween('datePublication', [$debutDuMois, $finDuMois])
+        $quota = $freemium?->getValeurParametre('Annonces/mois') ?? 3; // Par défaut 3
+
+        // Déterminer la date de départ de la période Freemium
+        $lastAbonnementExpire = $user->abonnements()
+            ->where('date_fin', '<', now())
+            ->orderByDesc('date_fin')
+            ->first();
+
+        $start = $lastAbonnementExpire
+            ? $lastAbonnementExpire->date_fin->copy()->addDay()->startOfDay()
+            : $user->created_at->copy()->startOfDay();
+            //: $user->email_verified_at->copy()->startOfDay();
+
+        // Calculer la période mensuelle actuelle
+        $diffInMonths = $start->diffInMonths(now());
+        $debutPeriode = $start->copy()->addMonths($diffInMonths);
+        $finPeriode = $debutPeriode->copy()->addMonth()->subSecond();
+
+        // Vérifier le nombre de publications durant cette période
+        $annoncesPubliees = $user->biens()
+            ->whereBetween('datePublication', [$debutPeriode, $finPeriode])
             ->count();
 
-        if ($annoncesPublieesCeMois >= 3) {
-            return redirect()->back()->with('error', 'Vous avez épuisé vos 3 publications gratuites de ce mois-ci.')
-                   ->with('limit_error', true);;
+        if ($annoncesPubliees >= $quota) {
+            return redirect()->back()
+                //->with('error', "Vous avez atteint la limite de $quota annonce(s) gratuite(s) pour la période du {$debutPeriode->format('d/m/Y')} au {$finPeriode->format('d/m/Y')}.")
+                ->with('error', "Vous avez atteint la limite de $quota annonce(s) gratuite(s) pour ce mois-ci")
+                ->with('limit_error', true)
+                ->with('freemium_quota', $quota)
+                ->with('freemium_start', $debutPeriode->format('d/m/Y'))
+                ->with('freemium_end', $finPeriode->format('d/m/Y'));
         }
 
         return $next($request);
