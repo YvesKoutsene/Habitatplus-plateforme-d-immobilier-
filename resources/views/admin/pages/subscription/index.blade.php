@@ -26,22 +26,21 @@
                         <h5 class="card-title">Liste des Abonnements Actifs</h5>
                     </div>
                     @if(!$abonnements->isEmpty())
-                    <div class="d-flex mb-3 justify-content-between">
-                        <form action="{{ route('subscription.list') }}" method="GET" class="d-flex">
-                            <select name="perPage" class="form-select me-2" onchange="this.form.submit()">
-                                <option value="5" {{ $perPage == 5 ? 'selected' : '' }}>5 entrées/page</option>
-                                <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10 entrées/page</option>
-                                <option value="25" {{ $perPage == 25 ? 'selected' : '' }}>25 entrées/page</option>
-                                <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50 entrées/page</option>
-                            </select>
-                        </form>
-                        <form action="{{ route('subscription.list') }}" method="GET" class="d-flex">
-                            <input type="text" name="search" class="form-control me-2" placeholder="Taper ici pour chercher..." value="{{ request()->get('search') }}">
-                            <button type="submit" class="btn btn-primary" title="Rechercher"><i class="bi bi-search"></i></button>
-                        </form>
-                    </div>
+                        <div class="d-flex mb-3 justify-content-between">
+                            <form action="{{ route('subscription.list') }}" method="GET" class="d-flex">
+                                <select name="perPage" class="form-select me-2" onchange="this.form.submit()">
+                                    <option value="5" {{ $perPage == 5 ? 'selected' : '' }}>5 entrées/page</option>
+                                    <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10 entrées/page</option>
+                                    <option value="25" {{ $perPage == 25 ? 'selected' : '' }}>25 entrées/page</option>
+                                    <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50 entrées/page</option>
+                                </select>
+                            </form>
+                            <form action="{{ route('subscription.list') }}" method="GET" class="d-flex">
+                                <input type="text" name="search" class="form-control me-2" placeholder="Taper ici pour chercher..." value="{{ request()->get('search') }}">
+                                <button type="submit" class="btn btn-primary" title="Rechercher"><i class="bi bi-search"></i></button>
+                            </form>
+                        </div>
                     @endif
-
                     @if($abonnements->isEmpty())
                     <div class="alert alert-info">
                         Aucun abonnement actif pour le moment.
@@ -51,12 +50,12 @@
                         <table class="table table-hover table-striped">
                             <thead>
                             <tr>
-                                <th>Propriétaire</th>
-                                <th>Modele d'abonnement</th>
-                                <th>Prix (FCFA)</th>
-                                <th>Duree</th>
-                                <th>Date Début</th>
-                                <th>Date Fin</th>
+                                <th>Abonné</th>
+                                <th>Abonnement</th>
+                                <th>Durée</th>
+                                <th>Montant (FCFA)</th>
+                                <th>Effectué le</th>
+                                <th>Expire le</th>
                                 <th>Actions</th>
                             </tr>
                             </thead>
@@ -68,8 +67,8 @@
                                     | {{ $abonnement->user->name }}
                                 </td>
                                 <td>{{ $abonnement->modele->nom }}</td>
-                                <td>{{ number_format($abonnement->montant, 0, ',', ' ') }}</td>
                                 <td>{{ $abonnement->duree}} Mois</td>
+                                <td>{{ number_format($abonnement->montant, 0, ',', ' ') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($abonnement->date_début)->translatedFormat('d F Y') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($abonnement->date_fin)->translatedFormat('d F Y') }}</td>
                                 <td>
@@ -84,12 +83,12 @@
                             </tbody>
                             <tfoot>
                             <tr>
-                                <th>Propriétaire</th>
-                                <th>Modele d'abonnement</th>
-                                <th>Prix (FCFA)</th>
-                                <th>Duree</th>
-                                <th>Date Début</th>
-                                <th>Date Fin</th>
+                                <th>Abonné</th>
+                                <th>Abonnement</th>
+                                <th>Durée</th>
+                                <th>Montant (FCFA)</th>
+                                <th>Effectué le</th>
+                                <th>Expire le</th>
                                 <th>Actions</th>
                             </tr>
                             </tfoot>

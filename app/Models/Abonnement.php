@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Abonnement extends Model
 {
-    //
     use HasFactory;
 
     protected $fillable = ['keyabonnement', 'montant', 'duree', 'id_user', 'modele_id', 'date_début', 'date_fin', 'statut', 'createdby', 'updatedby'];

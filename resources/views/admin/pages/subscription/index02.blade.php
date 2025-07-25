@@ -51,14 +51,15 @@
                         <table class="table table-hover table-striped">
                             <thead>
                             <tr>
-                                <th>Propriétaire</th>
-                                <th>Modele d'abonnement</th>
-                                <th>Prix (FCFA)</th>
-                                <th>Duree</th>
-                                <th>Date Début</th>
-                                <th>Date Fin</th>
+                                <th>Propiétaire</th>
+                                <th>Abonnement</th>
+                                <th>Durée</th>
+                                <th>Montant (FCFA)</th>
+                                <th>A expiré le</th>
+                                <th>Effectué le</th>
                                 <th>Actions</th>
                             </tr>
+
                             </thead>
                             <tbody>
                             @foreach($abonnements as $abonnement)
@@ -68,10 +69,10 @@
                                     | {{ $abonnement->user->name }}
                                 </td>
                                 <td>{{ $abonnement->modele->nom }}</td>
-                                <td>{{ number_format($abonnement->montant, 0, ',', ' ') }}</td>
                                 <td>{{ $abonnement->duree}} Mois</td>
-                                <td>{{ \Carbon\Carbon::parse($abonnement->date_début)->translatedFormat('d F Y') }}</td>
+                                <td>{{ number_format($abonnement->montant, 0, ',', ' ') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($abonnement->date_fin)->translatedFormat('d F Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($abonnement->date_début)->translatedFormat('d F Y') }}</td>
                                 <td>
                                     <div class="d-flex">
                                         <a href="" class="btn btn-sm btn-outline-info me-2" title="Détails de l'abonnement">
@@ -84,12 +85,12 @@
                             </tbody>
                             <tfoot>
                             <tr>
-                                <th>Propriétaire</th>
-                                <th>Modele d'abonnement</th>
-                                <th>Prix (FCFA)</th>
-                                <th>Duree</th>
-                                <th>Date Début</th>
-                                <th>Date Fin</th>
+                                <th>Propiétaire</th>
+                                <th>Abonnement</th>
+                                <th>Durée</th>
+                                <th>Montant (FCFA)</th>
+                                <th>A expiré le</th>
+                                <th>Effectué le</th>
                                 <th>Actions</th>
                             </tr>
                             </tfoot>

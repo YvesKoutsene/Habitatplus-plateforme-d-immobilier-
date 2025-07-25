@@ -19,6 +19,7 @@ $@php
             <strong class="text-warning">{{ number_format($bien->prix, 0, ',', ' ') }} CFA</strong>
         </span>
     </h5>
+
     <div class="card shadow-lg border-0 rounded-lg mb-4">
         @php
             $medias = [];
@@ -173,8 +174,8 @@ $@php
                 <div class="card shadow-lg border-0 rounded-lg mb-4">
                     <li class="btn btn-info rounded">
                         <span class="text-white">Annonce boostée : {{ ucfirst($bien->boostActif->type_boost) }}</span>
-                        <p>Expire le {{ \Carbon\Carbon::parse($bien->boostActif->date_fin)->translatedFormat('d F Y') }} à
-                            {{ \Carbon\Carbon::parse($bien->boostActif->date_fin)->translatedFormat('H:i') }}
+                        <p>Expire le {{ \Carbon\Carbon::parse($bien->boostActif->date_fin)->translatedFormat('d F Y') }} <!-- à
+                            {{ \Carbon\Carbon::parse($bien->boostActif->date_fin)->translatedFormat('H:i') }} -->
                         </p>
                     </li>
                 </div>

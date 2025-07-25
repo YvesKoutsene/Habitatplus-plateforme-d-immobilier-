@@ -9,6 +9,9 @@ use App\Models\Bien;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
+use App\Models\ModeleAbonnement;
+use App\Models\ParametreModele;
+
 class BoostController extends Controller
 {
     /**
@@ -31,7 +34,7 @@ class BoostController extends Controller
      * Store a newly created resource in storage.
      */
 
-    //Fonction permettant de booster une annonce
+    // Fonction permettant de booster une annonce
     public function store(Request $request, $id_bien) {
         $request->validate([
             'type_boost' => 'required|in:top,mise_en_avant,auto-remontee',
@@ -48,6 +51,17 @@ class BoostController extends Controller
 
         if ($bien->statut !== 'publié') {
             return redirect()->back()->with('error', 'Seules les annonces publiées peuvent être boostées.');
+        }
+
+        // Pour determiner si le user a atteint le max de boost selon son abonnement
+        $abonnementActif = $user->abonnementActif()->with('modele.parametres')->first();
+        $modele = $abonnementActif ? $abonnementActif->modele : ModeleAbonnement::getModeleFreemium();
+        $boostsMax = (int) $modele?->getValeurParametre('Boosts/annonce') ?? 0;
+
+        $nbBoosts = $bien->boosts()->count();
+
+        if ($nbBoosts >= $boostsMax) {
+            return back()->with('error', 'Vous avez atteint la limite de boosts pour cette annonce.');
         }
 
         $boost = new Boost();

@@ -59,7 +59,6 @@ $@php
                             @endforeach
                         </ul>
                     </div>
-
                     <div class="card-footer bg-transparent text-center pb-4">
                         @if($modele->nom === 'Freemium')
                             @if( auth()->user()->abonnementActif )

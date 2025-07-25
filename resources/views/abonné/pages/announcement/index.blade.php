@@ -63,14 +63,14 @@
                                                     <i class="bi bi-three-dots"></i>
                                                 </button>
                                                 <ul class="dropdown-menu" aria-labelledby="actionMenu{{ $bien->id }}">
+
                                                     @if($bien->statut != 'bloqué')
                                                         @php
-                                                            $user = auth()->user();
-                                                            $isAbonne = $user && $user->abonnementActif !== null;
+                                                            $boostsMax = $boostsMax ?? 0;
                                                             $canBoost = !$bien->boost || $bien->boost->statut === 'expiré';
                                                             $nbBoosts = $bien->boosts ? $bien->boosts->count() : 0;
                                                         @endphp
-                                                        @if($isAbonne && $canBoost && $nbBoosts < 2)
+                                                        @if($isAbonne && $canBoost && $nbBoosts < $boostsMax)
                                                             <li>
                                                                 <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#boostAnnonce{{ $bien->id }}" title="Booster cette annonce">
                                                                     <i class="bi bi-lightning"></i> Booster
@@ -79,6 +79,7 @@
                                                             <li><hr class="dropdown-divider"></li>
                                                         @endif
                                                     @endif
+
                                                     <li>
                                                         <a class="dropdown-item" href="{{ route('announcement.show', $bien->keybien) }}" title="Détails de cette annonce">
                                                             <i class="bi bi-eye"></i> Détails
