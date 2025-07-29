@@ -34,9 +34,7 @@ $@php
                                 {{ number_format($modele->prix ?? 0, 0, ',', ' ') }} FCFA<small class="text-muted">/Mois</small>
                             </h2>
                         @endif
-
                         <hr class="my-3">
-
                         <ul class="list-unstyled text-start">
                             @foreach($tousParametres as $parametre)
                                 @php
@@ -71,13 +69,13 @@ $@php
                                 <span class="text-muted small me-2">
                                     Expire le <strong>{{ \Carbon\Carbon::parse(auth()->user()->abonnementActif->date_fin)->translatedFormat('d F Y') }}</strong>
                                 </span>
-                                <a href="#" class="btn btn-outline-danger rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#abonnementProModal">
+                                <a href="#" class="btn btn-outline-danger rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#abonnementProModal"
+                                   data-modele-id="{{ $modele->id }}" data-prix="{{ $modele->prix }}" data-renew="true">
                                     <i class="bi bi-arrow-repeat me-1"></i> Se réabonner
                                 </a>
                             @else
                                 <button class="btn btn-outline-danger rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#abonnementProModal"
-                                        data-modele-id="{{ $modele->id }}"
-                                        data-prix="{{ $modele->prix }}">
+                                        data-modele-id="{{ $modele->id }}" data-prix="{{ $modele->prix }}">
                                     <i class="bi bi-rocket-takeoff me-2"></i> Passer à {{ $modele->nom }}
                                 </button>
                             @endif
@@ -90,15 +88,18 @@ $@php
     </div>
 </div>
 
-<!-- Modale pour faire un abonnement Pro -->
+<!-- Modale pour faire un abonnement Pro & rénouveller -->
 <div class="modal fade" id="abonnementProModal" tabindex="-1" aria-labelledby="abonnementProLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content shadow-lg border-0 rounded-4">
-            <form action="{{ route('subscription.store') }}" method="POST" onsubmit="showLoading()">
+            <form id="subscriptionForm" action="{{ route('subscription.store') }}" method="POST" onsubmit="showLoading()">
                 @csrf
                 <input type="hidden" name="modele_id" value="{{ $modele->id }}">
                 <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title" id="abonnementProLabel"><i class="bi bi-rocket-takeoff me-2"></i>Souscrire à l'abonnement Pro</h5>
+                    <h5 class="modal-title" id="abonnementProLabel">
+                        <i class="bi bi-rocket-takeoff me-2"></i>
+                        <span id="modalTitleText">Souscrire à l'abonnement Pro</span>
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                 </div>
                 <div class="modal-body text-black">
@@ -134,14 +135,32 @@ $@php
     const modal = document.getElementById('abonnementProModal');
     modal.addEventListener('show.bs.modal', function (event) {
         const button = event.relatedTarget;
+
         const modeleId = button.getAttribute('data-modele-id');
         const prix = parseInt(button.getAttribute('data-prix'));
+        const isRenew = button.getAttribute('data-renew') === 'true';
 
-        const inputHidden = modal.querySelector('input[name="modele_id"]');
-        inputHidden.value = modeleId;
+        const form = modal.querySelector('form');
+        form.action = isRenew ? "{{ route('subscription.update') }}" : "{{ route('subscription.store') }}";
 
+        // Mise à jour des champs cachés
+        modal.querySelector('input[name="modele_id"]').value = modeleId;
+
+        // Texte dynamique
+        const modalTitle = modal.querySelector('#modalTitleText');
+        const walletText = modal.querySelector('#walletBtnText');
+
+        if (isRenew) {
+            modalTitle.textContent = "Renouveler l'abonnement Pro";
+        } else {
+            modalTitle.textContent = "Souscrire à l'abonnement Pro";
+        }
+
+        // Réinitialisation du total à payer
         const dureeSelect = modal.querySelector('#duree');
         const totalPayer = modal.querySelector('#totalPayer');
+        totalPayer.textContent = "-- FCFA";
+        dureeSelect.value = "";
 
         dureeSelect.onchange = () => {
             const duree = parseInt(dureeSelect.value);
@@ -153,5 +172,4 @@ $@php
     });
 </script>
 
-<!-- Modale pour refaire un abonnement Pro -->
 

@@ -100,7 +100,11 @@ Route::middleware(['auth', 'checkUserType:2','check.email.verified'])->group(fun
     Route::get('/ticket', [TicketController::class, 'create'])->name('ticket.create');
     Route::post('/ticket', [TicketController::class, 'store'])->name('ticket.store');
 
-    Route::post('/subscription/portefeuille', [SubscriptionController::class, 'store'])->name('subscription.store');
+    // Pour s'abonner par wallet
+    Route::post('/subscription/portefeuille/store', [SubscriptionController::class, 'store'])->name('subscription.store');
+
+    // Pour se réabonner par wallet
+    Route::post('/subscription/portefeuille/update', [SubscriptionController::class, 'update'])->name('subscription.update');
 });
 
 #Pour les sans connecté (visiteurs)

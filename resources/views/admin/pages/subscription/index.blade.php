@@ -69,7 +69,37 @@
                                 <td>{{ $abonnement->modele->nom }}</td>
                                 <td>{{ $abonnement->duree}} Mois</td>
                                 <td>{{ number_format($abonnement->montant, 0, ',', ' ') }}</td>
-                                <td>{{ \Carbon\Carbon::parse($abonnement->date_début)->translatedFormat('d F Y') }}</td>
+                                <td>
+                                    @php
+                                        $created = \Carbon\Carbon::parse($abonnement->created_at);
+                                        $updated = \Carbon\Carbon::parse($abonnement->updated_at);
+                                    @endphp
+                                    {{ $created->translatedFormat('d F Y') }}
+                                    @if(!$created->equalTo($updated))
+                                        <button type="button" class="btn btn-sm btn-link p-0 ms-1" data-bs-toggle="modal" data-bs-target="#reabonnementModal{{ $abonnement->id }}">
+                                            (voir +)
+                                        </button>
+                                        <div class="modal fade" id="reabonnementModal{{ $abonnement->id }}" tabindex="-1" aria-labelledby="reabonnementModalLabel{{ $abonnement->id }}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="reabonnementModalLabel{{ $abonnement->id }}">Réabonnement</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>L'utilisateur <strong>{{ $abonnement->user->name }}</strong> s'est réabonné le :
+                                                            <span class="badge bg-success">{{ $updated->translatedFormat('d F Y à H:i') }}</span>
+                                                        </p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle"></i> Fermer</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </td>
+
                                 <td>{{ \Carbon\Carbon::parse($abonnement->date_fin)->translatedFormat('d F Y') }}</td>
                                 <td>
                                     <div class="d-flex">
@@ -99,7 +129,6 @@
                             <li class="page-item {{ $abonnements->onFirstPage() ? 'disabled' : '' }}">
                                 <a class="page-link" href="{{ $abonnements->previousPageUrl() }}" tabindex="-1" aria-disabled="{{ $abonnements->onFirstPage() }}">Précédent</a>
                             </li>
-
                             @for ($i = 1; $i <= $abonnements->lastPage(); $i++)
                             <li class="page-item {{ $i == $abonnements->currentPage() ? 'active' : '' }}">
                                 <a class="page-link" href="{{ $abonnements->url($i) }}">{{ $i }}</a>
@@ -115,8 +144,6 @@
             </div>
         </div>
     </div>
-
-
 </section>
 
 @endsection

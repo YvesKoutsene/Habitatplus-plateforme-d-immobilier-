@@ -38,7 +38,7 @@ class BoostController extends Controller
     public function store(Request $request, $id_bien) {
         $request->validate([
             'type_boost' => 'required|in:top,mise_en_avant,auto-remontee',
-            'duree' => 'required|integer|min:1',
+            //'duree' => 'required|integer|min:1',
             'unite_duree' => 'required|in:jour,semaine,mois,annee',
         ]);
 
@@ -68,8 +68,8 @@ class BoostController extends Controller
         $boost->keyboost = Str::uuid()->toString();
         $boost->id_bien = $bien->id;
         $boost->type_boost = $request->type_boost;
-        $boost->duree = $request->duree;
-        //$boost->duree = '30';
+        //$boost->duree = $request->duree;
+        $boost->duree = '7';
         $boost->unite_duree = $request->unite_duree;
         $boost->date_debut = now();
         $boost->date_fin = Carbon::now()->addDays($request->duree);

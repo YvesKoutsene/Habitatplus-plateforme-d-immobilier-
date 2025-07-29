@@ -108,7 +108,6 @@ class SubscriptionController extends Controller
                 # A revoir ici après par Moi
             $user->abonnementActif()?->update(['statut' => 'expiré']);
 
-            // Création du nouvel abonnement
             Abonnement::create([
                 'keyabonnement' => Str::uuid()->toString(),
                 'duree' => $duree,
@@ -132,6 +131,70 @@ class SubscriptionController extends Controller
         }
     }
 
+    // Fonction permettant à un abonné de se réabonner
+    public function update(Request $request)
+    {
+        $request->validate([
+            'duree' => 'required|integer|min:1|max:12',
+            'modele_id' => 'required|exists:modele_abonnements,id',
+            'mode' => 'required|in:wallet,mobile',
+        ]);
+
+        if ($request->mode !== 'wallet') {
+            return back()->with('info', 'Le paiement Mobile Money n’est pas encore disponible.');
+        }
+
+        $user = auth()->user();
+        $portefeuille = $user->portefeuilleActif;
+
+        if (!$portefeuille) {
+            return back()->with('error', 'Portefeuille introuvable.');
+        }
+
+        $modele = ModeleAbonnement::findOrFail($request->modele_id);
+        $duree = $request->duree;
+        $montant = ($duree === 12) ? 25000 : $modele->prix * $duree;
+
+        if ($portefeuille->solde < $montant) {
+            return back()->with('error', 'Votre solde est insuffisant pour cette opération.');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $abonnementActif = $user->abonnementActif()->first();
+
+            if ($abonnementActif && $abonnementActif->statut === 'actif') {
+                $abonnementActif->update([
+                    'duree' => $abonnementActif->duree + $duree,
+                    'date_fin' => $abonnementActif->date_fin->addMonths($duree),
+                    'montant' => $abonnementActif->montant + $montant,
+                ]);
+            } else {
+                Abonnement::create([
+                    'keyabonnement' => Str::uuid()->toString(),
+                    'duree' => $duree,
+                    'montant' => $montant,
+                    'id_user' => $user->id,
+                    'modele_id' => $modele->id,
+                    'date_début' => now(),
+                    'date_fin' => now()->addMonths($duree),
+                    'statut' => 'actif',
+                    'createdby' => $user->id,
+                ]);
+            }
+
+            // Débiter le portefeuille
+            $portefeuille->decrement('solde', $montant);
+
+            DB::commit();
+            return back()->with('success', 'Réabonnement effectué avec succès.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Erreur lors du réabonnement : ' . $e->getMessage());
+        }
+    }
+
     /**
      * Display the specified resource.
      *
@@ -150,18 +213,6 @@ class SubscriptionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
     {
         //
     }

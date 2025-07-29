@@ -20,7 +20,7 @@ class AnnouncementController extends Controller
     // Pour la vérification sur certaine fonction
     public function __construct()
     {
-        $this->middleware('verifier.publication')->only(['create', 'store', 'publish']);
+        $this->middleware('verifier.publication')->only(['create', 'store', 'publish', 'relaunch']);
     }
 
     // Fonction permettant d'afficher la liste des biens publiés dans la base de données
