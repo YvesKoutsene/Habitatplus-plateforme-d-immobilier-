@@ -70,13 +70,14 @@ class HomeController extends Controller
         // Récupérer les annonces boostées (Top) sans pagination
         $topBiens = Bien::with(['categorieBien', 'boost'])
             ->whereHas('boost', function ($query) {
-                $query->where('type_boost', 'top')->where('statut', 'actif');
+                $query->where('type_boost', 'top')
+                      ->where('statut', 'actif');
             })
             ->where('statut', 'publié')
             ->when($search, function ($query) use ($searchQuery) {
                 $query->where($searchQuery);
             })
-            ->orderBy('datePublication', 'desc')
+            //->orderBy('datePublication', 'desc')
             ->get();
 
         // Récupérer les annonces normales avec pagination
