@@ -45,7 +45,8 @@ class Bien extends Model
     // Pour renvoyer les boosts
     public function boosts()
     {
-        return $this->hasMany(Boost::class, 'id_bien');
+        //return $this->hasMany(Boost::class, 'id_bien');
+        return $this->hasMany(Boost::class, 'id_bien')->orderByDesc('created_at');
     }
 
     // Pour renvoyer le boost actif

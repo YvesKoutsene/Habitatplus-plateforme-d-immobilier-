@@ -137,7 +137,7 @@ class SubscriptionController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'duree' => 'required|integer|min:1|max:12',
+            'duree' => 'required|integer|min:1',
             'modele_id' => 'required|exists:modele_abonnements,id',
             'mode' => 'required|in:wallet,mobile',
         ]);

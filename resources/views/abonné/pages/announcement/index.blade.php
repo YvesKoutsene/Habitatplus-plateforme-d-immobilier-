@@ -145,47 +145,30 @@
                                     <form action="{{ route('announcement.boost', $bien->id) }}" method="POST" class="d-inline" onsubmit="showLoading()">
                                         @csrf
                                         @method('POST')
-                                        <div class="modal-body ">
-                                            <div class="mb-3">
-                                                <label for="boost_type" class="form-label text-black">Type de Boost<span class="text-danger" title="obligatoire">*</span></label>
-                                                <select id="boost_type" class="form-select form-control form-select-sm" name="type_boost" required>
-                                                    <!--<option value="" disabled selected>Sélectionnez un type</option>-->
-                                                    <option value="top">Top (Annonce affichée en haut)</option>
-                                                    <!--<option value="mise_en_avant">Highlight (Encadrement spécial)</option>
-                                                    <option value="auto-remontee">Auto-remontée (Remontée automatique)</option>-->
-                                                </select>
+                                        <div class="modal-body">
+                                            <div class="alert alert-info small mb-3">
+                                                <i class="bi bi-info-circle-fill me-2"></i>
+                                                En choisissant de booster cette annonce, elle sera automatiquement placée en haut des résultats pendant <strong>7 jours</strong>, à compter d’aujourd’hui.<br>
+                                                Vous pourrez à nouveau la booster à partir du <strong>{{ now()->addDays(8)->format('d/m/Y') }}</strong>.
                                             </div>
-                                            <div class="mb-3">
-                                                <label for="duree" class="form-label text-black">Durée<span class="text-danger" title="obligatoire">*</span></label>
-                                                <div class="row">
-                                                    <div class="col-5 col-md-5">
-                                                        <input type="text" id="duree" min="1" name="duree" class="form-control form-select-sm" required placeholder="Ex: 7" value="7" oninput="validateInputDuree()" disabled>
-                                                        <div class="invalid-feedback">Veuillez entrer une durée!</div>
-                                                    </div>
-                                                    <div class="col-7 col-md-7 mb-2 mb-md-0">
-                                                        <select id="boost_unite_duree" class="form-select form-control form-select-sm" name="unite_duree" required>
-                                                            <!--<option value="" disabled selected>Sélectionnez une unité</option>-->
-                                                            <option value="jour">Jour(s)</option>
-                                                            <!--<option value="semaine">Semaine(s)</option>
-                                                            <option value="mois">Mois</option>
-                                                            <option value="annee">Année</option>-->
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
+
+                                            <input type="hidden" name="type_boost" value="top">
+                                            <input type="hidden" name="duree" value="7">
+                                            <input type="hidden" name="unite_duree" value="jour">
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                                 <i class="bi bi-x-circle"></i> Annuler
                                             </button>
                                             <button type="submit" class="btn btn-danger">
-                                                <i class="bi bi-check"></i> Valider
+                                                <i class="bi bi-bolt-fill"></i> Confirmer le boost
                                             </button>
                                         </div>
                                     </form>
                                 </div>
                             </div>
                         </div>
+
                     @endif
                 @endforeach
                 @if(!$hasPublishedOrBlocked)

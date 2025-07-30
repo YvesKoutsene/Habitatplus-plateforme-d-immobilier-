@@ -32,8 +32,8 @@ class Kernel extends ConsoleKernel
 
             Log::info("Tâche CRON exécutée : $abonnementsExpirés abonnement(s) expiré(s), $boostsExpirés boost(s) expiré(s).");
         })
-        //->everyMinute(); // Pour chaque minute
-        ->dailyAt('00:00'); // Pour chaque un jour à minuit
+        ->everyMinute(); // Pour chaque minute
+        //->dailyAt('00:00'); // Pour chaque un jour à minuit
     }
 
     /**

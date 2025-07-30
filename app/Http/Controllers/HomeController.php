@@ -35,9 +35,6 @@ class HomeController extends Controller
                 $modeles = ModeleAbonnement::with('parametres')->get();
                 $tousParametres = ParametreModele::all();
 
-                // On va renvoyer le solde
-                $solde_portefeuille = auth()->user()?->portefeuilleActif->solde;
-
                 // On va renvoyer le boost de chaque abonnement
                 $isAbonne = auth()->user()?->abonnementActif !== null;
                 $abonnementActif = $user->abonnementActif()->with('modele.parametres')->first();
@@ -48,7 +45,7 @@ class HomeController extends Controller
                 }
                 $boostsMax = $modele?->getValeurParametre('Boosts/annonce') ?? 0;
 
-                return view('abonné.pages.auth.dashboard', compact('biens', 'modeles', 'tousParametres', 'boostsMax', 'isAbonne', 'solde_portefeuille'));
+                return view('abonné.pages.auth.dashboard', compact('biens', 'modeles', 'tousParametres', 'boostsMax', 'isAbonne'));
 
             } else {
                 return redirect()->back();
@@ -72,7 +69,7 @@ class HomeController extends Controller
 
         // Récupérer les annonces boostées (Top) sans pagination
         $topBiens = Bien::with(['categorieBien', 'boost'])
-            ->whereHas('boost', function ($query) {
+            ->whereHas('boosts', function ($query) {
                 $query->where('type_boost', 'top')
                       ->where('statut', 'actif');
             })
@@ -86,7 +83,7 @@ class HomeController extends Controller
         // Récupérer les annonces normales avec pagination
         $query = Bien::with(['categorieBien'])
             ->where('statut', 'publié')
-            ->whereDoesntHave('boost', function ($query) {
+            ->whereDoesntHave('boosts', function ($query) {
                 $query->where('type_boost', 'top')->where('statut', 'actif');
             })
             ->when($search, function ($query) use ($searchQuery) {

@@ -108,8 +108,10 @@ $@php
                 <div class="modal-body text-black">
                     <div id="etape1">
                         <label for="dureeInput" class="form-label">Entrez la durée (en mois) <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="dureeInput" oninput="validateInputDuree()" required>
+                        <input type="number" class="form-control form-control-sm" id="dureeInput" oninput="validateInputDuree()" required>
+                        <!--
                         <span class="text-muted text-info">Obtenez une reduction sur 12 mois</span>
+                        -->
                         <button type="button" class="btn btn-primary w-100 mt-3 px-3 py-2" id="btnAfficherFacture">Payer</button>
                     </div>
 
