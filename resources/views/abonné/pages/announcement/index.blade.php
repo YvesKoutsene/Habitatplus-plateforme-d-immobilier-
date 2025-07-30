@@ -15,7 +15,7 @@
             <a class="nav-link" id="brouillon-tab" data-bs-toggle="tab" href="#brouillon" role="tab" aria-controls="brouillon" aria-selected="true">Enregistrées</a>
         </li>
         <li class="nav-item flex-fill py-2 me-2" role="presentation">
-            <a class="nav-link" id="annule-tab" data-bs-toggle="tab" href="#annule" role="tab" aria-controls="annule" aria-selected="false">Annulées</a>
+            <a class="nav-link" id="annule-tab" data-bs-toggle="tab" href="#annule" role="tab" aria-controls="annule" aria-selected="false">Archivées</a>
         </li>
     </ul>
 
@@ -97,7 +97,7 @@
                                                         </li>
                                                         <li>
                                                             <button type="button" class="dropdown-item delete-button" data-bs-toggle="modal" data-bs-target="#terminateConfirmation{{ $bien->id }}" title="Arrêter cette annonce">
-                                                                <i class="bi bi-x-circle"></i> Arrêter
+                                                                <i class="bi bi-x-circle"></i> Archiver
                                                             </button>
                                                         </li>
                                                     @endif
@@ -119,7 +119,7 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body text-black">
-                                        Êtes-vous sûr de vouloir arrêter cette annonce ?
+                                        Êtes-vous sûr de vouloir archiver cette annonce ?
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle"></i> Annuler</button>

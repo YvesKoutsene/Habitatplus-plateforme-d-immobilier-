@@ -88,42 +88,73 @@ $@php
     </div>
 </div>
 
-<!-- Modale pour faire un abonnement Pro & rénouveller -->
+<!-- Modale pour abonnement Pro et son réabonnement -->
 <div class="modal fade" id="abonnementProModal" tabindex="-1" aria-labelledby="abonnementProLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content shadow-lg border-0 rounded-4">
             <form id="subscriptionForm" action="{{ route('subscription.store') }}" method="POST" onsubmit="showLoading()">
                 @csrf
-                <input type="hidden" name="modele_id" value="{{ $modele->id }}">
+                <input type="hidden" name="modele_id" id="modeleIdInput" value="{{ $modele->id }}">
+                <input type="hidden" name="duree" id="hiddenDuree">
+                <input type="hidden" name="mode" id="hiddenMode">
+
                 <div class="modal-header bg-danger text-white">
                     <h5 class="modal-title" id="abonnementProLabel">
-                        <i class="bi bi-rocket-takeoff me-2"></i>
-                        <span id="modalTitleText">Souscrire à l'abonnement Pro</span>
+                        <i class="bi bi-rocket-takeoff me-2"></i> Souscrire à l'abonnement Pro
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                 </div>
+
                 <div class="modal-body text-black">
-                    <div class="mb-3">
-                        <label for="duree" class="form-label">Durée de l’abonnement<span class="text-danger" title="Obligatoire">*</span></label>
-                        <select class="form-select form-control form-select-sm" id="duree" name="duree" required>
-                            <option value="" disabled selected>Selectionnez votre durée</option>
-                            @for($i = 1; $i <= 12; $i++)
-                                <option value="{{ $i }}">{{ $i }} mois</option>
-                            @endfor
-                        </select>
+                    <div id="etape1">
+                        <label for="dureeInput" class="form-label">Entrez la durée (en mois) <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="dureeInput" oninput="validateInputDuree()" required>
+                        <span class="text-muted text-info">Obtenez une reduction sur 12 mois</span>
+                        <button type="button" class="btn btn-primary w-100 mt-3 px-3 py-2" id="btnAfficherFacture">Payer</button>
                     </div>
-                    <p class="mt-2 text-muted">Total à payer : <strong id="totalPayer">-- FCFA</strong></p>
-                </div>
-                <div class="modal-footer flex-column text-center">
-                    <p class="text-muted mb-2">Procéder au paiement via</p>
-                    <div class="d-flex flex-wrap justify-content-center gap-3">
-                        <button type="submit" name="mode" value="wallet" class="btn btn-outline-primary">
-                            <i class="bi bi-wallet2 me-2"></i>Portefeuille
-                        </button>
-                        <span class="align-self-center text-muted">ou</span>
-                        <button type="submit" name="mode" value="mobile" class="btn btn-outline-success">
-                            <i class="bi bi-phone me-2"></i>Mobile Money
-                        </button>
+
+                    <div id="etape2" class="d-none">
+                        <h6 class="text-center mb-3">Récapitulatif</h6>
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Prix unitaire</span>
+                                <span id="prixUnitaireText">-- FCFA</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>Durée</span>
+                                <span id="factureDuree">-- mois</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between fw-bold">
+                                <span>Total</span>
+                                <span id="factureTotal">-- FCFA</span>
+                            </li>
+                            <li class="list-group-item text-success d-none" id="remiseInfo">
+                                🎉 Remise appliquée pour 12 mois : 25000 FCFA !
+                            </li>
+                        </ul>
+                        <button type="button" class="btn btn-success w-100" id="btnChoisirPaiement">Choisir le mode de paiement</button>
+                    </div>
+
+                    <div id="etape3" class="d-none text-center">
+                        <p class="text-muted mb-2">Choisissez votre mode de paiement :</p>
+                        <div class="d-flex flex-wrap justify-content-center gap-3 mb-3">
+                            <button type="button" id="btnWallet" class="btn btn-outline-primary w-45" onclick="choisirMode('wallet')">
+                                <i class="bi bi-wallet2 me-2"></i>Portefeuille
+                            </button>
+                            <button type="button" id="btnMobile" class="btn btn-outline-success w-45" onclick="choisirMode('mobile')">
+                                <i class="bi bi-phone me-2"></i>Mobile Money
+                            </button>
+                        </div>
+                        <button type="button" class="btn btn-dark w-100" id="btnConfirmerFinal">Confirmer</button>
+                    </div>
+
+                    <div id="etape4" class="d-none text-center">
+                        <div class="alert alert-info mb-3">
+                            Êtes-vous sûr de vouloir souscrire pour <strong><span id="confirmDuree">--</span> mois</strong> ?<br>
+                            Montant total : <strong><span id="confirmTotal">--</span> FCFA</strong><br>
+                            Paiement via : <strong><span id="confirmMode">--</span></strong>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Valider et payer</button>
                     </div>
                 </div>
             </form>
@@ -131,45 +162,4 @@ $@php
     </div>
 </div>
 
-<script>
-    const modal = document.getElementById('abonnementProModal');
-    modal.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget;
-
-        const modeleId = button.getAttribute('data-modele-id');
-        const prix = parseInt(button.getAttribute('data-prix'));
-        const isRenew = button.getAttribute('data-renew') === 'true';
-
-        const form = modal.querySelector('form');
-        form.action = isRenew ? "{{ route('subscription.update') }}" : "{{ route('subscription.store') }}";
-
-        // Mise à jour des champs cachés
-        modal.querySelector('input[name="modele_id"]').value = modeleId;
-
-        // Texte dynamique
-        const modalTitle = modal.querySelector('#modalTitleText');
-        const walletText = modal.querySelector('#walletBtnText');
-
-        if (isRenew) {
-            modalTitle.textContent = "Renouveler l'abonnement Pro";
-        } else {
-            modalTitle.textContent = "Souscrire à l'abonnement Pro";
-        }
-
-        // Réinitialisation du total à payer
-        const dureeSelect = modal.querySelector('#duree');
-        const totalPayer = modal.querySelector('#totalPayer');
-        totalPayer.textContent = "-- FCFA";
-        dureeSelect.value = "";
-
-        dureeSelect.onchange = () => {
-            const duree = parseInt(dureeSelect.value);
-            let total = (duree === 12) ? 25000 : prix * duree;
-            if (totalPayer) {
-                totalPayer.textContent = total.toLocaleString('fr-FR') + ' FCFA';
-            }
-        };
-    });
-</script>
-
-
+@include('abonné.pages.abonnement.script') <!-- Pour le js à utiliser pour cette page -->

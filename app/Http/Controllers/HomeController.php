@@ -35,6 +35,9 @@ class HomeController extends Controller
                 $modeles = ModeleAbonnement::with('parametres')->get();
                 $tousParametres = ParametreModele::all();
 
+                // On va renvoyer le solde
+                $solde_portefeuille = auth()->user()?->portefeuilleActif->solde;
+
                 // On va renvoyer le boost de chaque abonnement
                 $isAbonne = auth()->user()?->abonnementActif !== null;
                 $abonnementActif = $user->abonnementActif()->with('modele.parametres')->first();
@@ -45,7 +48,7 @@ class HomeController extends Controller
                 }
                 $boostsMax = $modele?->getValeurParametre('Boosts/annonce') ?? 0;
 
-                return view('abonné.pages.auth.dashboard', compact('biens', 'modeles', 'tousParametres', 'boostsMax', 'isAbonne'));
+                return view('abonné.pages.auth.dashboard', compact('biens', 'modeles', 'tousParametres', 'boostsMax', 'isAbonne', 'solde_portefeuille'));
 
             } else {
                 return redirect()->back();

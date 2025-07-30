@@ -467,16 +467,16 @@ class AnnouncementController extends Controller
             return redirect()->back()->with('error', 'Annonce introuvable.');
         }
         if ($annonce->id_user !== auth()->id()) {
-            return redirect()->back()->with('error', 'Vous n\'êtes pas autorisé à annuler cette annonce.');
+            return redirect()->back()->with('error', 'Vous n\'êtes pas autorisé à archiver cette annonce.');
         }
         if ($annonce->statut !== 'publié') {
-            return redirect()->back()->with('error', 'Seules les annonces publiées peuvent être annulées.');
+            return redirect()->back()->with('error', 'Seules les annonces publiées peuvent être archivées.');
         }
 
         $annonce->statut = 'terminé';
         $annonce->save();
 
-        return redirect()->route('dashboard')->with('success', 'Annonce annulée avec succès.');
+        return redirect()->route('dashboard')->with('success', 'Annonce archivée avec succès.');
     }
 
     // Fonction permettant de relancer une annonce
