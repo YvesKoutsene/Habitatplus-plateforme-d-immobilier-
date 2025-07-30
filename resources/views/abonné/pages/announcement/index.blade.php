@@ -152,7 +152,7 @@
                                                     <!--<option value="" disabled selected>Sélectionnez un type</option>-->
                                                     <option value="top">Top (Annonce affichée en haut)</option>
                                                     <!--<option value="mise_en_avant">Highlight (Encadrement spécial)</option>
-                                                                            <option value="auto-remontee">Auto-remontée (Remontée automatique)</option>-->
+                                                    <option value="auto-remontee">Auto-remontée (Remontée automatique)</option>-->
                                                 </select>
                                             </div>
                                             <div class="mb-3">
@@ -167,8 +167,8 @@
                                                             <!--<option value="" disabled selected>Sélectionnez une unité</option>-->
                                                             <option value="jour">Jour(s)</option>
                                                             <!--<option value="semaine">Semaine(s)</option>
-                                                                                    <option value="mois">Mois</option>
-                                                                                    <option value="annee">Année</option>-->
+                                                            <option value="mois">Mois</option>
+                                                            <option value="annee">Année</option>-->
                                                         </select>
                                                     </div>
                                                 </div>
