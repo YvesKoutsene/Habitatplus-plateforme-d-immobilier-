@@ -3,7 +3,7 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13-blue)
 ![Laravel](https://img.shields.io/badge/Laravel-8-red)
 ![License](https://img.shields.io/badge/License-MIT-green)
-![Stage](https://img.shields.io/badge/Stage-2025-orange)
+![Stage](https://img.shields.io/badge/Stage-2024-orange)
 
 ## Contexte
 Projet développé lors de mon stage chez **Data Insight Solution** (Lomé, Togo) en 2024.  
