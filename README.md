@@ -44,15 +44,3 @@ L'objectif était de créer une plateforme de gestion immobilière permettant le
 - `paiements` : historique des loyers
 - etc.
 
-### Exemple de requête analytique
-```sql
--- Nombre de biens par statut et par ville
-SELECT 
-    ville,
-    statut,
-    COUNT(*) as nombre_biens
-FROM biens
-GROUP BY ville, statut
-ORDER BY ville, nombre_biens DESC;
-
-
