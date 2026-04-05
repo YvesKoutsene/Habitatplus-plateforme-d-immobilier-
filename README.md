@@ -19,7 +19,7 @@ L'objectif était de créer une plateforme de gestion immobilière permettant le
 
 ---
 
-## 🛠️ Technologies utilisées
+## Technologies utilisées
 
 | Domaine | Technologies |
 |---------|-------------|
